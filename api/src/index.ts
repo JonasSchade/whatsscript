@@ -5,13 +5,14 @@ import { Sequelize } from 'sequelize-typescript';
 import { Message } from './models/message.model';
 import { Chat } from './models/chat.model';
 import { User } from './models/user.model';
+import { UserInChat } from './models/userInChat.model';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
     storage: 'database.sqlite'
 });
 
-sequelize.addModels([ User, Chat, Message ]);
+sequelize.addModels([ UserInChat, User, Chat, Message ]);
 sequelize.sync({ force: true });
 
 const app = express();

@@ -21,13 +21,7 @@ import {
 })
 @Table
 export class Message extends Model<Message> {
-    @Unique
-    @AutoIncrement
-    @PrimaryKey
-    @Column(DataType.INTEGER)
-    public id: number;
    
-    @Unique
     @Column(DataType.TEXT)
     public content: string;
     
@@ -38,9 +32,17 @@ export class Message extends Model<Message> {
     @Column(DataType.BOOLEAN)
     public read: boolean;
 
-    @BelongsTo(() => Chat)
+    @BelongsTo(() => Chat, { onDelete: 'cascade' })
     public chat: Chat;
 
     @BelongsTo(() => User)
     public user: User;
+
+    @ForeignKey(() => Chat)
+    @Column(DataType.INTEGER)
+    chatId: number;
+   
+    @ForeignKey(() => User)
+    @Column(DataType.INTEGER)
+    userId: number;
 }

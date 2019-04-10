@@ -1,4 +1,6 @@
 import { Chat } from './chat.model';
+import { IntegerDataType } from 'sequelize/types';
+import { UserInChat } from './userInChat.model';
 import {
     AutoIncrement,
     BelongsTo,
@@ -13,17 +15,11 @@ import {
     Table,
     Unique
 } from 'sequelize-typescript';
-import { IntegerDataType } from 'sequelize/types';
 
 
 @Table
 export class User extends Model<User> {
-    @Unique
-    @AutoIncrement
-    @PrimaryKey
-    @Column(DataType.INTEGER)
-    public id: number;
-    
+
     @Unique
     @Column(DataType.TEXT)
     public username: string;
@@ -41,6 +37,6 @@ export class User extends Model<User> {
     @Column(DataType.TEXT)
     public status: string;
 
-    @BelongsToMany(() => Chat, {through: 'UserInChat'})
+    @BelongsToMany(() => Chat, () => UserInChat)
     public chats: Chat[];
 }
