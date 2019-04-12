@@ -1,5 +1,8 @@
 <template>
-    <v-toolbar color="primary" />
+    <v-toolbar color="primary">
+        <v-toolbar-side-icon></v-toolbar-side-icon>
+        <v-toolbar-title>Title</v-toolbar-title>
+    </v-toolbar>
 </template>
 
 <script lang="ts">
