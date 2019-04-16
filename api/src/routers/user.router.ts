@@ -12,8 +12,6 @@ UserRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
     res.status(200).json(users);
 }));
 
-
-
 UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     const user: User|null = await User.findByPk(req.params.id, { attributes: ['picture'] });
    
@@ -26,7 +24,6 @@ UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
 
     res.status(200).json(user);
 }));
-
 
 //delete User
 UserRouter.delete('/:id', wrapAsync(async (req: Request, res: Response)=> {
@@ -45,7 +42,7 @@ UserRouter.post('/:id', wrapAsync(async (req: Request, res: Response)=> {
 
     if (user != null) throw { status: 404, responseMessage: `user with id ${req.body.id} already exists`};
 
-    User.create({}) //??
+    User.create() //?? User.create({})
 
     res.status(200).json(user);
 }));
@@ -56,11 +53,9 @@ UserRouter.put('/:id', wrapAsync(async (req: Request, res: Response)=> {
 
     if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`};
 
-    user.update({}); // alles einzeln reinschreiben ???
+    user.update({}); // alles einzeln reinschreiben ??? updatet der es automatisch richtig ?
 
     res.status(200).json(user);
 }));
-
-
 
 UserRouter.use(globalErrorHandler);
