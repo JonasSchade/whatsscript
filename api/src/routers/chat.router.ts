@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { Chat } from '../models/chat.model';
 import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
+import { Message } from '../models/message.model';
 
 export const ChatRouter = Router();
 
@@ -17,6 +18,7 @@ ChatRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
 
     const chatname = chat.chatname;
     const picture = chat.picture;
+    const messages: Message[] = await Message.findAll(); //ist das richtig ?
     res.status(200).json(chat);
 }));
 
