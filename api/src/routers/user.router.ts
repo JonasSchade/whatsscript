@@ -13,7 +13,7 @@ UserRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
 }));
 
 UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
-    const user: User|null = await User.findByPk(req.params.id, { attributes: ['picture'] });
+    const user: User|null = await User.findByPk(req.params.id);
    
     if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`};
    
