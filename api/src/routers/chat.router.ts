@@ -5,12 +5,13 @@ import { Message } from '../models/message.model';
 
 export const ChatRouter = Router();
 
+//suche alle chats
 ChatRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
     const chats: Chat[] = await Chat.findAll();
 
     res.status(200).json(chats);
 }));
-
+//suche bestimmten chat
 ChatRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id);
 
@@ -18,7 +19,7 @@ ChatRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
 
     const chatname = chat.chatname;
     const picture = chat.picture;
-    const messages: Message[] = await Message.findAll(); //ist das richtig ?
+
     res.status(200).json(chat);
 }));
 
