@@ -10,7 +10,7 @@
               <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
               
             </div>
-            <div class="message other-message float-right">
+            <div class="message my-message float-right">
               Hi Vincent, how are you? How is the project coming along?
             </div>
           </li>
@@ -20,7 +20,7 @@
               <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
               <span class="message-data-time">10:12 AM, Today</span>
             </div>
-            <div class="message my-message">
+            <div class="message other-message">
               Are we meeting today? Project has been already finished and I have results to show you.
             </div>
           </li>
@@ -31,7 +31,6 @@
         
         <div class="chat-message">
             <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>
-            
             <button>Send</button>
         </div> 
 
@@ -41,11 +40,15 @@
 <style lang="scss">
     $green: #86BB71;
     $blue: #94C2ED;
-    $orange: #E38968;
     $gray: #92959E;
+
     .container{
         margin-right: auto; 
         margin-left: auto;
+    }
+
+    ul{
+      list-style: none;
     }
 
     .chat-history {
@@ -63,6 +66,16 @@
         padding-left: 6px;
         }
         
+    }
+    .message {      
+      color: white;
+      padding: 18px 20px;
+      line-height: 26px;
+      font-size: 16px;
+      border-radius: 7px;
+      margin-bottom: 30px;
+      width: 90%;
+      position: relative;
     }
 
     .align-right {
@@ -98,11 +111,12 @@
         background: #F2F5F8;
         }
     }
-    .my-message {
+    .other-message {
       background: $green;
+    
     }
     
-    .other-message {
+    .my-message {
       background: $blue;
     }
 
