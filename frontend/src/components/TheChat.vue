@@ -3,7 +3,7 @@
         <form class="chat-area">   
             <div class="chat-area--messages">
                 <p id="text">
-                    Messages
+                    Messages {{ info }}
                 </p>
             </div>
 
@@ -45,10 +45,32 @@
 
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop  } from 'vue-property-decorator';
+import { UserService } from '../services/user.service'
+import { User } from '../models/user'
 
 @Component
 export default class Chat extends Vue {
-    data(){}
+    
+    private info: string = 'hey';
+    @Prop({type: Object as () => User})
+    private user: User;
+
+    mounted () {
+        this.getUser();
+        this.info =  this.user.username;
+    }
+
+    async getUser() {
+   
+    try {
+        this.user = await UserService.getUser(1);
+        console.log(this.user);
+    }
+    catch(err) {
+        console.log('Error: ', err.message);
+    }
+  }
+
 }
 </script>
