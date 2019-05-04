@@ -17,11 +17,11 @@
           
           <li>
             <div class="message-data">
-              <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+              <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent{{user.username}}</span>
               <span class="message-data-time">10:12 AM, Today</span>
             </div>
             <div class="message other-message">
-              Are we meeting today? Project has been already finished and I have results to show you.
+              Are we meeting today? Project has been already finished and I have results to show you.{{user.status}}
             </div>
           </li>
         </ul>
@@ -140,22 +140,31 @@ import { User } from '../models/user'
 @Component
 export default class Chat extends Vue {
     
-    private info: string = 'hey';
+    private username: string = 'hey';
+    private status: string = 'Kein Status';
     @Prop({type: Object as () => User})
-    private user: User;
+    private user: User = {
+            username: 'Leer',
+            email: 'Leer',
+            password: 'Leer',
+            picture: 'Leer',
+            status: 'Leer',
+            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
+        };
 
     mounted () {
         this.getUser();
-        this.info =  this.user.username;
     }
 
-    async getUser() {
+    private async getUser() {
    
     try {
         this.user = await UserService.getUser(1);
+        this.username = this.user.username;
+        this.status = this.user.status;
         console.log(this.user);
     }
-    catch(err) {
+    catch (err) {
         console.log('Error: ', err.message);
     }
   }

@@ -1,21 +1,21 @@
-import * as rp from "request-promise-native";
+import * as rp from 'request-promise-native';
 
 import { User } from '../models/user';
 
 export class UserService {
-    constructor(){
+    constructor() {
 
     }
 
-    async deleteUser(userId: number){
-        rp.delete("localhost:3030/api/user/${userId}");
+    public async deleteUser(userId: number) {
+        rp.delete('http://localhost:3000/user/' + userId);
     }
 
-    addUser(user: User){
-        var options = {
+    public addUser(user: User) {
+        const options = {
             method: 'POST',
-            uri: 'localhost:3030/api/user/post',
-            body: {           
+            uri: 'http://localhost:3000/user/post',
+            body: {     
                 username: user.username,
                 email: user.email,
                 password: user.password,
@@ -26,40 +26,50 @@ export class UserService {
             json: true // Automatically stringifies the body to JSON
         };
         
-        try{
-            rp.post(options)
-        } catch (err){
-            throw new Error("Error in addUser()");
-        }
-    }
-
-    async updateUser(user: User){
-
-    }
-
-    static async getUser(userId: number): Promise<User>{
-        let response: User;
-        
         try {
-            const body =await rp.get("localhost:3030/api/user/${userId}")
-            response = JSON.parse(body);
-        } catch (err){
-            throw new Error("Error in getUser()");
+            rp.post(options);
+        } catch (err) {
+            throw new Error('Error in addUser()');
         }
-        
+    }
+
+    public async updateUser(user: User) {
+
+    }
+
+    public static async getUser(userId: number): Promise<User> {
+        let response: User;
+     
+        try {
+            const body = await rp.get('http://localhost:3000/user/' + userId);
+            response = JSON.parse(body);
+            console.log(response);
+        } catch (err) {
+            throw new Error('Error in getUser()');
+        }
+        /*
+        response = {
+            username: 'Timm',
+            email: 'a',
+            password: 'b',
+            picture: 'c',
+            status: 'Toller Status',
+            chats: [{chatname: 'chat1', picture: 'a', users: []}]
+        }
+        */
         return response;
     }
 
-    async getUsersForChat(chatId: number): Promise<User[]>{
+    public async getUsersForChat(chatId: number): Promise<User[]> {
         let response: User[];
 
         try {
-            const body =await rp.get("localhost:3030/api/userInChat/${chatId}")
+            const body = await rp.get('http://localhost:3000/userInChat/' + chatId);
             response = JSON.parse(body);
-        } catch (err){
-            throw new Error("Error in getUsersForChat()");
+        } catch (err) {
+            throw new Error('Error in getUsersForChat()');
         }
-        
+
         return response;
     }
 

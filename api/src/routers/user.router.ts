@@ -8,6 +8,11 @@ import { UserInChat } from '../models/userInChat.model';
 
 export const UserRouter = Router();
 
+UserRouter.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+    next();
+  });
+
 UserRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
     const users: User[] = await User.findAll(); 
 
