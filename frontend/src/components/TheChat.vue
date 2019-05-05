@@ -33,7 +33,9 @@
             <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>
             <button>Send</button>
         </div> 
-
+        <button @click="addUser()">Add User</button>
+        <button @click="updateUser()">Update User</button>
+        <button @click="deleteUser()">Delete User</button>
     </div>
 </template>
 
@@ -134,8 +136,8 @@
 
 <script lang="ts">
 import { Component, Vue, Prop  } from 'vue-property-decorator';
-import { UserService } from '../services/user.service'
-import { User } from '../models/user'
+import { UserService } from '../services/user.service';
+import { User } from '../models/user';
 
 @Component
 export default class Chat extends Vue {
@@ -151,9 +153,26 @@ export default class Chat extends Vue {
             status: 'Leer',
             chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
         };
+        private user2: User = {
+            username: 'Franz',
+            email: 'franz.com',
+            password: 'a',
+            picture: 'b',
+            status: 'naja',
+            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
+        };
+         private user3: User = {
+            username: 'user3',
+            email: 'user3',
+            password: 'user3',
+            picture: 'user3',
+            status: 'user3',
+            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
+        };
 
-    mounted () {
+    private mounted() {
         this.getUser();
+       // UserService.addUser(this.user2);
     }
 
     private async getUser() {
@@ -162,11 +181,22 @@ export default class Chat extends Vue {
         this.user = await UserService.getUser(1);
         this.username = this.user.username;
         this.status = this.user.status;
-        console.log(this.user);
-    }
-    catch (err) {
+    } catch (err) {
         console.log('Error: ', err.message);
     }
+  }
+
+  private deleteUser() {
+    UserService.deleteUser(1);
+  }
+
+  private updateUser() {
+    UserService.updateUser(1, this.user3);
+    console.log(this.user3);
+  }
+
+  private addUser() {
+    UserService.addUser(this.user2);
   }
 
 }

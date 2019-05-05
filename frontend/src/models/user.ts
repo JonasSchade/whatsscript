@@ -1,6 +1,6 @@
 import { Chat } from './chat';
 
-export interface User {   
+export interface User {
     username: string;
     email: string;
     password: string;

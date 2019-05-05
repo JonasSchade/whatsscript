@@ -10,6 +10,9 @@ export const UserRouter = Router();
 
 UserRouter.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     next();
   });
 
@@ -47,7 +50,7 @@ UserRouter.delete('/:id', wrapAsync(async (req: Request, res: Response)=> {
 UserRouter.post('/', wrapAsync(async (req: Request, res: Response)=> {
 
     
-    const user = new User({username: '', email: '', password: '', picture: '', status: '', chats: null });
+    const user = new User({username: req.body.username, email: req.body.email, password: req.body.password, picture: req.body.picture, status: req.body.status, chats: null });
     await user.save();
 
     res.status(200).json(user);
@@ -59,7 +62,7 @@ UserRouter.put('/:id', wrapAsync(async (req: Request, res: Response)=> {
 
     if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`};
 
-    user.update({}); // alles einzeln reinschreiben ??? updatet der es automatisch richtig ?
+    user.update({username: req.body.username, email: req.body.email, password: req.body.password, picture: req.body.picture, status: req.body.status});
 
     res.status(200).json(user);
 }));

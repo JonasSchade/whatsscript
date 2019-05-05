@@ -3,19 +3,16 @@ import * as rp from 'request-promise-native';
 import { User } from '../models/user';
 
 export class UserService {
-    constructor() {
 
-    }
-
-    public async deleteUser(userId: number) {
+    public static async deleteUser(userId: number) {
         rp.delete('http://localhost:3000/user/' + userId);
     }
 
-    public addUser(user: User) {
+    public static addUser(user: User): void {
         const options = {
             method: 'POST',
-            uri: 'http://localhost:3000/user/post',
-            body: {     
+            uri: 'http://localhost:3000/user/',
+            body: {
                 username: user.username,
                 email: user.email,
                 password: user.password,
@@ -33,17 +30,34 @@ export class UserService {
         }
     }
 
-    public async updateUser(user: User) {
+    public static async updateUser(userId: number, user: User) {
+        const options = {
+            method: 'PUT',
+            uri: 'http://localhost:3000/user/' + userId,
+            body: {
+                username: user.username,
+                email: user.email,
+                password: user.password,
+                picture: user.picture,
+                status: user.status,
+                chats: user.chats
+            },
+            json: true // Automatically stringifies the body to JSON
+        };
 
+        try {
+            rp.put(options);
+        } catch (err) {
+            throw new Error('Error in updateUser()');
+        }
     }
 
     public static async getUser(userId: number): Promise<User> {
         let response: User;
-     
+
         try {
             const body = await rp.get('http://localhost:3000/user/' + userId);
             response = JSON.parse(body);
-            console.log(response);
         } catch (err) {
             throw new Error('Error in getUser()');
         }
@@ -60,7 +74,7 @@ export class UserService {
         return response;
     }
 
-    public async getUsersForChat(chatId: number): Promise<User[]> {
+    public static async getUsersForChat(chatId: number): Promise<User[]> {
         let response: User[];
 
         try {

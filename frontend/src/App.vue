@@ -9,7 +9,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import TheToolbar from '@/components/TheToolbar.vue';
-import TheChat from '@/components/TheChat.vue'
+import TheChat from '@/components/TheChat.vue';
 
 @Component({
     components: { TheToolbar, TheChat }
