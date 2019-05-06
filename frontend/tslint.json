@@ -20,6 +20,7 @@
       "no-consecutive-blank-lines": false,
       "max-classes-per-file": false,
       "member-ordering": false,
-      "arrow-parens": [true, "ban-single-arg-parens"]
+      "arrow-parens": [true, "ban-single-arg-parens"],
+      "no-trailing-whitespace": [true, "ignore-blank-lines"]
   }
 }

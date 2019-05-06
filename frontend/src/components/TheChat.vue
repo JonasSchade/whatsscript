@@ -1,54 +1,205 @@
 <template>
     <div class="container">
-        <form class="chat-area">   
-            <div class="chat-area--messages">
-                <p id="text">
-                    Messages
-                </p>
+
+        <!--chat-history-->  
+      <div class="chat-history">
+        <ul>
+          <li class="clearfix">
+            <div class="message-data align-right">
+              <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
+              <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
+              
             </div>
-
-            <v-textarea class="chat-area--text" placeholder="Write a message..."></v-textarea>
-            <v-btn color="info">Send</v-btn>   
-
-        </form>
+            <div class="message my-message float-right">
+              Hi Vincent, how are you? How is the project coming along?
+            </div>
+          </li>
+          
+          <li>
+            <div class="message-data">
+              <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent{{user.username}}</span>
+              <span class="message-data-time">10:12 AM, Today</span>
+            </div>
+            <div class="message other-message">
+              Are we meeting today? Project has been already finished and I have results to show you.{{user.status}}
+            </div>
+          </li>
+        </ul>
+      </div>
+        <!--end of chat history-->
+        
+        
+        <div class="chat-message">
+            <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>
+            <button>Send</button>
+        </div> 
+        <button @click="addUser()">Add User</button>
+        <button @click="updateUser()">Update User</button>
+        <button @click="deleteUser()">Delete User</button>
     </div>
 </template>
 
 <style lang="scss">
-    #text{
-        padding: 0px;
-        height: 250px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        
-    }
+    $green: #86BB71;
+    $blue: #94C2ED;
+    $gray: #92959E;
+
     .container{
         margin-right: auto; 
         margin-left: auto;
     }
-    .chat-area--text{
-        background: rgb(255, 255, 255); 
-        color: rgb(34, 34, 34);
-        margin-left: 5px;
-        margin-right: 5px;
-        margin-bottom: 100px;
-        padding: 0px;
+
+    ul{
+      list-style: none;
     }
-    .chat-area--button{ 
+
+    .chat-history {
+    padding: 30px 30px 20px;
+    border-bottom: 2px solid white;
+    overflow-y: scroll;
+    height: 575px;
+    
+        .message-data {
+        margin-bottom: 15px;
+        }
+        
+        .message-data-time {
+        color: lighten($gray, 8%);
+        padding-left: 6px;
+        }
         
     }
-    .chat-area--messages{
-        padding: 0px;
+    .message {      
+      color: white;
+      padding: 18px 20px;
+      line-height: 26px;
+      font-size: 16px;
+      border-radius: 7px;
+      margin-bottom: 30px;
+      width: 90%;
+      position: relative;
     }
+
+    .align-right {
+        text-align: right;
+    }
+
+    .float-right {
+        float: right;
+    }
+
+    .chat-message {
+    padding: 30px;
+    
+        textarea {
+        width: 100%;
+        border: none;
+        padding: 10px 20px;
+        font: 14px/22px "Lato", Arial, sans-serif;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        resize: none;
+
+        }
+    
+        button {
+        float: right;
+        color: #1E90FF;
+        font-size: 16px;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        background: #F2F5F8;
+        }
+    }
+    .other-message {
+      background: $green;
+    
+    }
+    
+    .my-message {
+      background: $blue;
+    }
+
+    .clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
+
 </style>
 
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop  } from 'vue-property-decorator';
+import { UserService } from '../services/user.service';
+import { User } from '../models/user';
 
 @Component
 export default class Chat extends Vue {
-    data(){}
+    
+    private username: string = 'hey';
+    private status: string = 'Kein Status';
+    @Prop({type: Object as () => User})
+    private user: User = {
+            username: 'Leer',
+            email: 'Leer',
+            password: 'Leer',
+            picture: 'Leer',
+            status: 'Leer',
+            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
+        };
+        private user2: User = {
+            username: 'Franz',
+            email: 'franz.com',
+            password: 'a',
+            picture: 'b',
+            status: 'naja',
+            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
+        };
+         private user3: User = {
+            username: 'user3',
+            email: 'user3',
+            password: 'user3',
+            picture: 'user3',
+            status: 'user3',
+            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
+        };
+
+    private mounted() {
+        this.getUser();
+       // UserService.addUser(this.user2);
+    }
+
+    private async getUser() {
+   
+    try {
+        this.user = await UserService.getUser(1);
+        this.username = this.user.username;
+        this.status = this.user.status;
+    } catch (err) {
+        console.log('Error: ', err.message);
+    }
+  }
+
+  private deleteUser() {
+    UserService.deleteUser(1);
+  }
+
+  private updateUser() {
+    UserService.updateUser(1, this.user3);
+    console.log(this.user3);
+  }
+
+  private addUser() {
+    UserService.addUser(this.user2);
+  }
+
 }
+
+
 </script>
