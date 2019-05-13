@@ -94,7 +94,7 @@ UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
 }));
 
 // Alle chats eines Users
-UserRouter.get('/user/:id/chats', wrapAsync(async (req: Request, res: Response) => {
+UserRouter.get('/:id/chats', wrapAsync(async (req: Request, res: Response) => {
     const user: User|null = await User.findByPk(req.params.id, { include: [ Chat ] }); // suche bestimmten User
 
     if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`};
