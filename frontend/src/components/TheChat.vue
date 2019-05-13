@@ -3,28 +3,11 @@
 
         <!--chat-history-->  
       <div class="chat-history">
-        <ul>
-          <li class="clearfix">
-            <div class="message-data align-right">
-              <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
-              <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
-              
-            </div>
-            <div class="message my-message float-right">
-              Hi Vincent, how are you? How is the project coming along?
-            </div>
-          </li>
-          
-          <li>
-            <div class="message-data">
-              <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent{{user.username}}</span>
-              <span class="message-data-time">10:12 AM, Today</span>
-            </div>
-            <div class="message other-message">
-              Are we meeting today? Project has been already finished and I have results to show you.{{user.status}}
-            </div>
-          </li>
-        </ul>
+            <message :user="user.username" sent="12:00, Today" :own="true" content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "></message>
+            <message :user="user.username" sent="12:00, Today" :own="false" content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "></message>
+            <message :user="user.username" sent="12:00, Today" :own="true" content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "></message>
+            <message :user="user.username" sent="12:00, Today" :own="false" content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "></message>
+
       </div>
         <!--end of chat history-->
         
@@ -54,6 +37,11 @@
     }
 
     .chat-history {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+
+      /*
     padding: 30px 30px 20px;
     border-bottom: 2px solid white;
     overflow-y: scroll;
@@ -67,7 +55,7 @@
         color: lighten($gray, 8%);
         padding-left: 6px;
         }
-        
+        */
     }
     .message {      
       color: white;
@@ -138,11 +126,14 @@
 import { Component, Vue, Prop  } from 'vue-property-decorator';
 import { UserService } from '../services/user.service';
 import { User } from '../models/user';
+import Message from '@/components/Message.vue';
 
-@Component
+@Component({
+  components: { Message }
+})
 export default class Chat extends Vue {
     
-    private username: string = 'hey';
+   
     private status: string = 'Kein Status';
     @Prop({type: Object as () => User})
     private user: User = {
@@ -179,7 +170,7 @@ export default class Chat extends Vue {
    
     try {
         this.user = await UserService.getUser(1);
-        this.username = this.user.username;
+      
         this.status = this.user.status;
     } catch (err) {
         console.log('Error: ', err.message);
