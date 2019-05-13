@@ -7,17 +7,17 @@ import { UserInChat } from '../models/userInChat.model';
 export const UserInChatRouter = Router();
 
 UserInChatRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
-    //const users: User[] = await User.findAll();
-    //const chat: Chat|null = await Chat.findByPk(req.param.id);
+    // const users: User[] = await User.findAll();
+    // const chat: Chat|null = await Chat.findByPk(req.param.id);
     const userInChat: UserInChat = await UserInChat.findAll();
-   
-    if (userInChat === null) throw {status: 404, responseMessage: 'no Users in this chat'}
-    //wenn keine Users in Chat sind,Chat.destroy() Chat löschen ? dann res.status(200).end() ?
-    
+
+    if (userInChat === null) throw {status: 404, responseMessage: 'no Users in this chat'};
+    // wenn keine Users in Chat sind,Chat.destroy() Chat löschen ? dann res.status(200).end() ?
+
     res.status(200).json(userInChat);
 }));
 
-//User verlässt Chat 
+// User verlässt Chat
 
 
 

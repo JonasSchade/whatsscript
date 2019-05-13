@@ -8,25 +8,26 @@ import { UserInChat } from '../models/userInChat.model';
 
 export const UserRouter = Router();
 
-UserRouter.use(function (req, res, next) {
+UserRouter.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
-    res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+    // tslint:disable-next-line:max-line-length
+    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
     next();
   });
 
 UserRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
-    const users: User[] = await User.findAll(); 
+    const users: User[] = await User.findAll();
 
     res.status(200).json(users);
 }));
 
 UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     const user: User|null = await User.findByPk(req.params.id);
-   
+
     if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`};
-   
+
     const email = user.email;
     const username = user.username;
     const status = user.status;
@@ -35,8 +36,8 @@ UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     res.status(200).json(user);
 }));
 
-//delete User
-UserRouter.delete('/:id', wrapAsync(async (req: Request, res: Response)=> {
+// delete User
+UserRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
     const user: User|null = await User.findByPk(req.params.id);
 
     if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} doesnt exists`};
@@ -46,50 +47,63 @@ UserRouter.delete('/:id', wrapAsync(async (req: Request, res: Response)=> {
     res.status(200).end();
 }));
 
-//create new User, User der Datenbank hinzufügen
-UserRouter.post('/', wrapAsync(async (req: Request, res: Response)=> {
+// create new User, User der Datenbank hinzufügen
+UserRouter.post('/', wrapAsync(async (req: Request, res: Response) => {
 
-    
-    const user = new User({username: req.body.username, email: req.body.email, password: req.body.password, picture: req.body.picture, status: req.body.status, chats: null });
+
+    const user = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        picture: req.body.picture,
+        status: req.body.status,
+        chats: null
+    });
     await user.save();
 
     res.status(200).json(user);
 }));
 
-//update existing User
-UserRouter.put('/:id', wrapAsync(async (req: Request, res: Response)=> {
+// update existing User
+UserRouter.put('/:id', wrapAsync(async (req: Request, res: Response) => {
     const user: User|null = await User.findByPk(req.params.id);
 
     if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`};
 
-    user.update({username: req.body.username, email: req.body.email, password: req.body.password, picture: req.body.picture, status: req.body.status});
+    user.update({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        picture: req.body.picture,
+        status: req.body.status
+    });
 
     res.status(200).json(user);
 }));
 
 
 
-//User über Usernamen finden
-//vllt mit findOne(), Reloading instances bei Sequelize
+// User über Usernamen finden
+// vllt mit findOne(), Reloading instances bei Sequelize
 UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     const user: User|null = await User.findByPk(req.params.id);
-   
+
     if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`};
-   
+
     res.status(200).json(user);
 }));
 
-//Alle chats eines Users
+// Alle chats eines Users
 UserRouter.get('/user/:id/chats', wrapAsync(async (req: Request, res: Response) => {
-    const user: User|null = await User.findByPk(req.params.id, { include: [ Chat ] }); //suche bestimmten User
-   
-    if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`}; //User doesnt exists?
+    const user: User|null = await User.findByPk(req.params.id, { include: [ Chat ] }); // suche bestimmten User
+
+    if (user === null) throw { status: 404, responseMessage: `user with id ${req.body.id} not found`};
 
     const chats: Chat[] = user.chats;
 
-    //weitere Beispiele wie man es machen könnte
-    //const chats: Chat[] = await user.$get('chats');
-    //const chats: Chat[] = await UserInChat.findAll({ where: { userId: user.id}, include: [ Chat ] })
+    // weitere Beispiele wie man es machen könnte
+    // const chats: Chat[] = await user.$get('chats');
+    // const chats: Chat[] = await UserInChat.findAll({ where: { userId: user.id}, include: [ Chat ] })
 
 
     res.status(200).json(chats);
