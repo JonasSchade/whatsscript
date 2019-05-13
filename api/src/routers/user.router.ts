@@ -1,21 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { User } from '../models/user.model';
 import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
-import { userInfo } from 'os';
-import { Model } from 'sequelize/types';
 import { Chat } from '../models/chat.model';
-import { UserInChat } from '../models/userInChat.model';
 
 export const UserRouter = Router();
-
-UserRouter.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
-    // tslint:disable-next-line:max-line-length
-    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
-    next();
-  });
 
 UserRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
     const users: User[] = await User.findAll();
