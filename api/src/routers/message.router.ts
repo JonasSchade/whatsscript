@@ -6,7 +6,7 @@ export const MessageRouter = Router();
 
 MessageRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
     const messages: Message[] = await Message.findAll();
-       res.status(200).json(messages);
+    res.status(200).json(messages);
 }));
 
 MessageRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
@@ -16,12 +16,12 @@ MessageRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
 
     const content = message.content;
     const chatId = message.chatId;
-    const userId = message.userId; //wessen ID ? die von mir oder des anderen Chatpartner?
+    const userId = message.userId; // wessen ID ? die von mir oder des anderen Chatpartner?
     // sent und read ?
 
     res.status(200).json(message);
 }));
-//delete message 
+// delete message
 MessageRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
     const message: Message|null = await Message.findByPk(req.params.id);
 
@@ -32,17 +32,17 @@ MessageRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
     res.status(200).end();
 }));
 
-//create new message
-MessageRouter.post('/:id', wrapAsync(async (req: Request, res: Response)=> {
+// create new message
+MessageRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {
     const message: Message|null = await Message.findByPk(req.params.id);
 
     if (message != null) throw { status: 404, responseMessage: `message with id ${req.body.id} already exists`};
 
-    Message.create({}) //??
+    Message.create({}); // ??
 
     res.status(200).json(message);
 }));
 
-//message updaten ?
+// message updaten ?
 
 MessageRouter.use(globalErrorHandler);

@@ -1,18 +1,14 @@
 import { Chat } from './chat.model';
 import { User } from './user.model';
 import {
-    AutoIncrement,
     BelongsTo,
-    BelongsToMany,
     Column,
     DataType,
     Default,
     DefaultScope,
     ForeignKey,
     Model,
-    PrimaryKey,
-    Table,
-    Unique
+    Table
 } from 'sequelize-typescript';
 
 @DefaultScope({
@@ -21,10 +17,10 @@ import {
 })
 @Table
 export class Message extends Model<Message> {
-   
+
     @Column(DataType.TEXT)
     public content: string;
-    
+
     @Column(DataType.TEXT)
     public sent: string;
 
@@ -40,9 +36,9 @@ export class Message extends Model<Message> {
 
     @ForeignKey(() => Chat)
     @Column(DataType.INTEGER)
-    chatId: number;
-   
+    public chatId: number;
+
     @ForeignKey(() => User)
     @Column(DataType.INTEGER)
-    userId: number;
+    public userId: number;
 }

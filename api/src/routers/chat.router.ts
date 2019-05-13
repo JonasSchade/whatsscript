@@ -1,29 +1,28 @@
 import { Router, Request, Response } from 'express';
 import { Chat } from '../models/chat.model';
 import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
-import { Message } from '../models/message.model';
 
 export const ChatRouter = Router();
 
-//suche alle chats
+// suche alle chats
 ChatRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
     const chats: Chat[] = await Chat.findAll();
 
     res.status(200).json(chats);
 }));
-//suche bestimmten chat
+// suche bestimmten chat
 ChatRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id);
 
     if (chat === null) throw { status: 404, responseMessage: `chat with id ${req.body.id} not found`};
 
-    const chatname = chat.chatname;
+    const chatname = chat.chatName;
     const picture = chat.picture;
 
     res.status(200).json(chat);
 }));
 
-//delete chat
+// delete chat
 ChatRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id);
 
@@ -33,7 +32,7 @@ ChatRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
     res.status(200).end();
 }));
 
-//create chat
+// create chat
 ChatRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id);
 
@@ -43,7 +42,7 @@ ChatRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {
     res.status(200).json(chat);
 }));
 
-//update chat
+// update chat
 ChatRouter.put('/:id', wrapAsync(async (req: Request, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id);
 

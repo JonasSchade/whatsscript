@@ -10,6 +10,8 @@ import { User } from './models/user.model';
 import { UserInChat } from './models/userInChat.model';
 
 import { UserRouter } from './routers/user.router';
+import { ChatRouter } from './routers/chat.router';
+import { MessageRouter } from './routers/message.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
@@ -31,11 +33,22 @@ const {
     PORT = 3000
 } = process.env;
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+    // tslint:disable-next-line:max-line-length
+    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+    next();
+});
+
 app.get('/', (req: Request, res: Response) => {
     res.status(200).json(sequelize.options);
 });
 
 app.use('/user', UserRouter);
+app.use('/chat', ChatRouter);
+app.use('/message', MessageRouter);
 
 app.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);
