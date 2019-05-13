@@ -10,6 +10,8 @@ import { User } from './models/user.model';
 import { UserInChat } from './models/userInChat.model';
 
 import { UserRouter } from './routers/user.router';
+import { ChatRouter } from './routers/chat.router';
+import { MessageRouter } from './routers/message.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
@@ -36,6 +38,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/user', UserRouter);
+app.use('/chat', ChatRouter);
+app.use('/message', MessageRouter);
 
 app.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);
