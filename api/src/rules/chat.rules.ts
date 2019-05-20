@@ -15,7 +15,7 @@ export const ChatRules = {
         check('id').exists().withMessage('Chat doesnt exists'),
         oneOf([
             check('chatName').isLength({min: 1}).withMessage('must be at least one char long'),
-            check('picture').exists(),
+            check('picture').exists()
         ]),
         return422
     ]
