@@ -1,4 +1,4 @@
-import { validationResult } from "express-validator/check";
+import { validationResult } from 'express-validator/check';
 
 export function wrapAsync(fn) {
     return (req, res, next) => {

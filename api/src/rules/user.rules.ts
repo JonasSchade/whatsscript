@@ -20,15 +20,12 @@ export const UserRules = {
     update: [
         check('id').exists().withMessage('user doesnt exists'),
         oneOf([
-        check('username').exists().withMessage('username doesnt exists'),
-        check('email').isEmail().withMessage('is not a email')
-            .exists().withMessage('email already exists'),
-        check('picture').exists(),
-        check('status').exists()
+            check('username').exists().withMessage('username doesnt exists'),
+            check('email').isEmail().withMessage('is not a email')
+                .exists().withMessage('email already exists'),
+            check('picture').exists(),
+            check('status').exists()
         ]),
         return422
     ]
 };
-
-
-
