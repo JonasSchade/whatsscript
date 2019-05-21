@@ -4,7 +4,7 @@
       <span id="message-data-time">{{sent}}</span>
       <span id="message-data-user">{{user}}</span>
     </div>
-    <div class="message-body" elevation-1>
+    <div class="message-body elevation-1" >
       <span>{{content}}</span>
     </div>
   </div>

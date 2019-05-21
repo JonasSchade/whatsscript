@@ -17,8 +17,6 @@ export class MessageService {
                 content: message.content,
                 sent: message.sent,
                 read: message.read,
-                chat: message.chat,
-                user: message.user,
                 chatId: message.chatId,
                 userId: message.userId
             },
@@ -40,8 +38,6 @@ export class MessageService {
                 content: message.content,
                 sent: message.sent,
                 read: message.read,
-                chat: message.chat,
-                user: message.user,
                 chatId: message.chatId,
                 userId: message.userId
             },
@@ -63,6 +59,19 @@ export class MessageService {
             response = JSON.parse(body);
         } catch (err) {
             throw new Error('Error in getMessage()');
+        }
+
+        return response;
+    }
+
+    public static async getMessagesInChat(chatId: number): Promise<Message[]> {
+        let response: Message[];
+
+        try {
+            const body = await rp.get('http://localhost:3000/message/');
+            response = JSON.parse(body);
+        } catch (err) {
+            throw new Error('Error in getMessagesForChat()');
         }
 
         return response;
