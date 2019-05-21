@@ -15,5 +15,17 @@ export default new Router({
     //   // which is lazy-loaded when the route is visited.
     //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     // }
+
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('./components/TheLogin.vue')
+    },
+
+    {
+      path: 'chat',
+      name: 'Chat',
+      component: () => import('./components/TheChat.vue')
+    }
   ]
 });
