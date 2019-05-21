@@ -12,8 +12,7 @@ import {
 } from 'sequelize-typescript';
 
 @DefaultScope({
-    attributes: { exclude: [ 'password', 'groupId' ] },
-    include: [ () => Chat ]
+    attributes: { exclude: [ 'password', 'groupId' ] }
 })
 @Table
 export class Message extends Model<Message> {

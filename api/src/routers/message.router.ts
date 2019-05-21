@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Message } from '../models/message.model';
+import { Chat } from '../models/chat.model';
 import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
 
 export const MessageRouter = Router();
@@ -33,14 +34,21 @@ MessageRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
 }));
 
 // create new message
-MessageRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {
-    const message: Message|null = await Message.findByPk(req.params.id);
+MessageRouter.post('/', wrapAsync(async (req: Request, res: Response) => {
+    //const message: Message|null = await Message.findByPk(req.params.id);
 
-    if (message != null) throw { status: 404, responseMessage: `message with id ${req.body.id} already exists`};
-
-    Message.create({}); // ??
+    //if (message != null) throw { status: 404, responseMessage: `message with id ${req.body.id} already exists`};
+    const message = new Message({
+        content: req.body.content,
+        sent: req.body.sent,
+        read: false,
+        userId: req.body.userId,
+        chatId: req.body.chatId
+    });
+    await message.save();
 
     res.status(200).json(message);
+    //res.status(200).json(message);
 }));
 
 // message updaten ?
