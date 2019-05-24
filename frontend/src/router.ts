@@ -16,14 +16,10 @@ export default new Router({
     //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     // }
 
-    {
-      path: '/login',
-      name: 'Login',
-      component: () => import('./components/TheLogin.vue')
-    },
+    
 
     {
-      path: 'chat',
+      path: '/chat',
       name: 'Chat',
       component: () => import('./components/TheChat.vue')
     }

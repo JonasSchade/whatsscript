@@ -50,6 +50,20 @@ app.use('/user', UserRouter);
 app.use('/chat', ChatRouter);
 app.use('/message', MessageRouter);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);
+});
+
+const io = require('socket.io')(server);
+
+
+io.on('connection', function(socket: any) {
+    console.log("A User has connected to: Socket"+socket.id)
+    socket.on('SEND_MESSAGE', function(message: Message) {
+        io.emit('MESSAGE', message);
+        console.log(message);
+     
+        
+    
+    });
 });

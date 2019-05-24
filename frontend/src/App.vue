@@ -1,7 +1,6 @@
 <template>
     <v-app >
       <TheToolbar />
-      <TheLogin />
       <router-view />
     </v-app>
 </template>

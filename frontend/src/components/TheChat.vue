@@ -2,31 +2,25 @@
   <div class="container">
     <!--chat-history-->
     <div class="chat-history">
+       <message-component
+        :user="user.username"
+        sent="12:00, Today"
+        :own="false"
+        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
+      ></message-component>
+      <message-component
+        :user="user.username"
+        sent="12:00, Today"
+        :own="true"
+        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
+      ></message-component>
       <message-component
         v-for="m in messages"
         :key="m.id"
         :user="getUser(m.userId).username"
         :sent="m.sent"
-        :own="true"
+        :own="isItMyMessage(m.userId)"
         :content="m.content"
-      ></message-component>
-      <message-component
-        :user="user.username"
-        sent="12:00, Today"
-        :own="false"
-        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
-      ></message-component>
-      <message-component
-        :user="user.username"
-        sent="12:00, Today"
-        :own="true"
-        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
-      ></message-component>
-      <message-component
-        :user="user.username"
-        sent="12:00, Today"
-        :own="false"
-        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
       ></message-component>
     </div>
     <!--end of chat history-->
@@ -39,7 +33,7 @@
         placeholder="Type your message"
         rows="3"
       ></textarea>
-      <button @click="sendMessage()">Send</button>
+      <button @click="sendMsg()">Send</button>
     </div>
     <button @click="addUser()">Add User</button>
     <button @click="updateUser()">Update User</button>
@@ -145,68 +139,78 @@ ul {
 
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { UserService } from "../services/user.service";
-import { MessageService } from "../services/message.service";
-import { User } from "../models/user";
-import { Message } from "../models/message";
-import MessageComponent from "@/components/Message.vue";
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import { UserService } from '../services/user.service';
+import { MessageService } from '../services/message.service';
+import { User } from '../models/user';
+import { Message } from '../models/message';
+import MessageComponent from '@/components/Message.vue';
 import moment from 'moment';
+import io from 'socket.io-client';
 
 @Component({
   components: { MessageComponent }
 })
 export default class Chat extends Vue {
-  private messageToSend: string = "";
-  private status: string = "Kein Status";
+  private messageToSend: string = '';
+  private message: string = '';
+  private socket = io('localhost:3000');
+
+  private status: string = 'Kein Status';
   @Prop({ type: Object as () => User })
   private user: User = {
-    username: "Leer",
-    email: "Leer",
-    password: "Leer",
-    picture: "Leer",
-    status: "Leer",
-    chats: [{ chatname: "Leer", picture: "Leer", users: [] }]
+    id: 1,
+    username: 'Defaultname',
+    email: 'Leer',
+    password: 'Leer',
+    picture: 'Leer',
+    status: 'Leer',
+    chats: [ 1, 2 ]
   };
   private user2: User = {
-    username: "Franz",
-    email: "franz.com",
-    password: "a",
-    picture: "b",
-    status: "naja",
-    chats: [{ chatname: "Leer", picture: "Leer", users: [] }]
+    id: 2,
+    username: 'Franz',
+    email: 'franz.com',
+    password: 'a',
+    picture: 'b',
+    status: 'naja',
+    chats: [ 1 , 2 ]
   };
   private user3: User = {
-    username: "user3",
-    email: "user3",
-    password: "user3",
-    picture: "user3",
-    status: "user3",
-    chats: [{ chatname: "Leer", picture: "Leer", users: [] }]
+    id: 3,
+    username: 'user3',
+    email: 'user3',
+    password: 'user3',
+    picture: 'user3',
+    status: 'user3',
+    chats: [ 2, 3 ]
   };
 
   @Prop({
-    default: [{ content: "heeey", sent: "2", chatId: 1, userId: 1, read: true }]
+    default: [{ content: 'heeey', sent: '2', chatId: 1, userId: 1, read: true }]
   })
-  public messages?: Message[];
-
-  // @Prop() public m: Message;
+  public messages: Message[] = new Array();
 
   private mounted() {
+    this.$store.state.loggedInUser = this.user;
     this.getUser(1);
-    this.getMessages();
-    // UserService.addUser(this.user2);
+    // this.getMessages();
+
+    this.socket.on('MESSAGE', (data: Message) => {
+      this.messages = [...this.messages, data];
+      // you can also do this.messages.push(data);
+    });
   }
 
   private async getUser(userId: number): User {
     try {
-      //this.user = await UserService.getUser(1);
-      userToReturn: User = new User();
+      // this.user = await UserService.getUser(1);
+      let userToReturn: User = new User();
       userToReturn = await UserService.getUser(1);
 
       return userToReturn;
     } catch (err) {
-      console.log("Error: ", err.message);
+      console.log('Error: ', err.message);
     }
   }
 
@@ -216,7 +220,7 @@ export default class Chat extends Vue {
 
       console.log(this.messages);
     } catch (err) {
-      console.log("Error: ", err.message);
+      console.log('Error: ', err.message);
     }
   }
 
@@ -233,10 +237,32 @@ export default class Chat extends Vue {
     UserService.addUser(this.user2);
   }
 
-  private sendMessage() {
-    console.log("this.messageToSend: " + this.messageToSend);
-    let sent: string = moment().format('YYYY-MM-DD h:mm A');
-    MessageService.addMessage({content: this.messageToSend, sent: sent, read: false, chatId: 1, userId:1})
+  private sendMessageToDatabase() {
+    console.log('this.messageToSend: ' + this.messageToSend);
+    const sent: string = moment().format('YYYY-MM-DD h:mm A');
+    MessageService.addMessage({
+      content: this.messageToSend,
+      sent: sent,
+      read: false,
+      chatId: 1,
+      userId: 1
+    });
+  }
+
+  private sendMsg() {
+    const sent: string = moment().format('hh:mm, DD.MM.YY');
+    this.socket.emit('SEND_MESSAGE', {
+      content: this.messageToSend,
+      sent: sent,
+      read: false,
+      chatId: 1,
+      userId: 1
+    });
+    this.messageToSend = '';
+  }
+
+  private isItMyMessage(userid: number): boolean {
+    return this.user.id === userid;
   }
 }
 </script>
