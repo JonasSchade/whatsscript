@@ -3,6 +3,11 @@ import { User } from '../models/user.model';
 import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
 import { Chat } from '../models/chat.model';
 
+import { UserInChat } from '../models/userInChat.model';
+import { UserRules } from '../rules/user.rules';
+import { matchedData } from 'express-validator/filter';
+
+
 export const UserRouter = Router();
 
 UserRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
@@ -36,17 +41,11 @@ UserRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
 }));
 
 // create new User, User der Datenbank hinzufügen
-UserRouter.post('/', wrapAsync(async (req: Request, res: Response) => {
+UserRouter.post('/', UserRules.create, wrapAsync(async (req: Request, res: Response) => {
 
+    const queryData = matchedData(req);
 
-    const user = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        picture: req.body.picture,
-        status: req.body.status,
-        chats: null
-    });
+    const user = new User(queryData);
     await user.save();
 
     res.status(200).json(user);
