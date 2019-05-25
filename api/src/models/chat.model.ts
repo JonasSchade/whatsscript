@@ -1,7 +1,7 @@
 import { User } from './user.model';
 import { Message } from './message.model';
 import { UserInChat } from './userInChat.model';
-import { BelongsToMany, Table, Column, Model, DataType, DefaultScope } from 'sequelize-typescript';
+import { BelongsToMany, HasMany, Table, Column, Model, DataType, DefaultScope } from 'sequelize-typescript';
 
 @DefaultScope({
     include: [ { model: () => Message, order: ['date', 'DESC'], limit: 1 } ]
@@ -17,4 +17,7 @@ export class Chat extends Model<Chat> {
 
     @BelongsToMany(() => User, () => UserInChat)
     public users: User[];
+
+    @HasMany(() => Message, { foreignKey: 'chatId' })
+    private messages: Message[];
 }

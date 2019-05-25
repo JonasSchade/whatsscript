@@ -1,59 +1,66 @@
 <template>
-    <div class="container">
-
-        <!--chat-history-->  
-      <div class="chat-history">
-        <ul>
-          <li class="clearfix">
-            <div class="message-data align-right">
-              <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
-              <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
-              
-            </div>
-            <div class="message my-message float-right">
-              Hi Vincent, how are you? How is the project coming along?
-            </div>
-          </li>
-          
-          <li>
-            <div class="message-data">
-              <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent{{user.username}}</span>
-              <span class="message-data-time">10:12 AM, Today</span>
-            </div>
-            <div class="message other-message">
-              Are we meeting today? Project has been already finished and I have results to show you.{{user.status}}
-            </div>
-          </li>
-        </ul>
-      </div>
-        <!--end of chat history-->
-        
-        
-        <div class="chat-message">
-            <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>
-            <button>Send</button>
-        </div> 
-        <button @click="addUser()">Add User</button>
-        <button @click="updateUser()">Update User</button>
-        <button @click="deleteUser()">Delete User</button>
+  <div class="container">
+    <!--chat-history-->
+    <div class="chat-history">
+       <message-component
+        :user="user.username"
+        sent="12:00, Today"
+        :own="false"
+        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
+      ></message-component>
+      <message-component
+        :user="user.username"
+        sent="12:00, Today"
+        :own="true"
+        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
+      ></message-component>
+      <message-component
+        v-for="m in messages"
+        :key="m.id"
+        :user="getUser(m.userId).username"
+        :sent="m.sent"
+        :own="isItMyMessage(m.userId)"
+        :content="m.content"
+      ></message-component>
     </div>
+    <!--end of chat history-->
+
+    <div class="chat-message">
+      <textarea
+        v-model="messageToSend"
+        name="message-to-send"
+        id="message-to-send"
+        placeholder="Type your message"
+        rows="3"
+      ></textarea>
+      <button @click="sendMsg()">Send</button>
+    </div>
+    <button @click="addUser()">Add User</button>
+    <button @click="updateUser()">Update User</button>
+    <button @click="deleteUser()">Delete User</button>
+  </div>
 </template>
 
 <style lang="scss">
-    $green: #86BB71;
-    $blue: #94C2ED;
-    $gray: #92959E;
+$green: #86bb71;
+$blue: #94c2ed;
+$gray: #92959e;
 
-    .container{
-        margin-right: auto; 
-        margin-left: auto;
-    }
+.container {
+  margin-right: auto;
+  margin-left: auto;
+}
 
-    ul{
-      list-style: none;
-    }
+ul {
+  list-style: none;
+}
 
-    .chat-history {
+.chat-history {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+
+  /*
     padding: 30px 30px 20px;
     border-bottom: 2px solid white;
     overflow-y: scroll;
@@ -67,122 +74,153 @@
         color: lighten($gray, 8%);
         padding-left: 6px;
         }
-        
-    }
-    .message {      
-      color: white;
-      padding: 18px 20px;
-      line-height: 26px;
-      font-size: 16px;
-      border-radius: 7px;
-      margin-bottom: 30px;
-      width: 90%;
-      position: relative;
-    }
+        */
+}
+.message {
+  color: white;
+  padding: 18px 20px;
+  line-height: 26px;
+  font-size: 16px;
+  border-radius: 7px;
+  margin-bottom: 30px;
+  width: 90%;
+  position: relative;
+}
 
-    .align-right {
-        text-align: right;
-    }
+.align-right {
+  text-align: right;
+}
 
-    .float-right {
-        float: right;
-    }
+.float-right {
+  float: right;
+}
 
-    .chat-message {
-    padding: 30px;
-    
-        textarea {
-        width: 100%;
-        border: none;
-        padding: 10px 20px;
-        font: 14px/22px "Lato", Arial, sans-serif;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        resize: none;
+.chat-message {
+  padding: 30px;
 
-        }
-    
-        button {
-        float: right;
-        color: #1E90FF;
-        font-size: 16px;
-        text-transform: uppercase;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        background: #F2F5F8;
-        }
-    }
-    .other-message {
-      background: $green;
-    
-    }
-    
-    .my-message {
-      background: $blue;
-    }
+  textarea {
+    width: 100%;
+    border: none;
+    padding: 10px 20px;
+    font: 14px/22px "Lato", Arial, sans-serif;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    resize: none;
+  }
 
-    .clearfix:after {
-        visibility: hidden;
-        display: block;
-        font-size: 0;
-        content: " ";
-        clear: both;
-        height: 0;
-    }
+  button {
+    float: right;
+    color: #1e90ff;
+    font-size: 16px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background: #f2f5f8;
+  }
+}
+.other-message {
+  background: $green;
+}
 
+.my-message {
+  background: $blue;
+}
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
 </style>
 
 
 <script lang="ts">
-import { Component, Vue, Prop  } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import { UserService } from '../services/user.service';
+import { MessageService } from '../services/message.service';
 import { User } from '../models/user';
+import { Message } from '../models/message';
+import MessageComponent from '@/components/Message.vue';
+import moment from 'moment';
+import io from 'socket.io-client';
 
-@Component
+@Component({
+  components: { MessageComponent }
+})
 export default class Chat extends Vue {
-    
-    private username: string = 'hey';
-    private status: string = 'Kein Status';
-    @Prop({type: Object as () => User})
-    private user: User = {
-            username: 'Leer',
-            email: 'Leer',
-            password: 'Leer',
-            picture: 'Leer',
-            status: 'Leer',
-            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
-        };
-        private user2: User = {
-            username: 'Franz',
-            email: 'franz.com',
-            password: 'a',
-            picture: 'b',
-            status: 'naja',
-            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
-        };
-         private user3: User = {
-            username: 'user3',
-            email: 'user3',
-            password: 'user3',
-            picture: 'user3',
-            status: 'user3',
-            chats: [{chatname: 'Leer', picture: 'Leer', users: []}]
-        };
+  private messageToSend: string = '';
+  private message: string = '';
+  private socket = io('localhost:3000');
 
-    private mounted() {
-        this.getUser();
-       // UserService.addUser(this.user2);
-    }
+  private status: string = 'Kein Status';
+  @Prop({ type: Object as () => User })
+  private user: User = {
+    id: 1,
+    username: 'Defaultname',
+    email: 'Leer',
+    password: 'Leer',
+    picture: 'Leer',
+    status: 'Leer',
+    chats: [ 1, 2 ]
+  };
+  private user2: User = {
+    id: 2,
+    username: 'Franz',
+    email: 'franz.com',
+    password: 'a',
+    picture: 'b',
+    status: 'naja',
+    chats: [ 1 , 2 ]
+  };
+  private user3: User = {
+    id: 3,
+    username: 'user3',
+    email: 'user3',
+    password: 'user3',
+    picture: 'user3',
+    status: 'user3',
+    chats: [ 2, 3 ]
+  };
 
-    private async getUser() {
-   
+  @Prop({
+    default: [{ content: 'heeey', sent: '2', chatId: 1, userId: 1, read: true }]
+  })
+  public messages: Message[] = new Array();
+
+  private mounted() {
+    this.$store.state.loggedInUser = this.user;
+    this.getUser(1);
+    // this.getMessages();
+
+    this.socket.on('MESSAGE', (data: Message) => {
+      this.messages = [...this.messages, data];
+      // you can also do this.messages.push(data);
+    });
+  }
+
+  private async getUser(userId: number): User {
     try {
-        this.user = await UserService.getUser(1);
-        this.username = this.user.username;
-        this.status = this.user.status;
+      // this.user = await UserService.getUser(1);
+      let userToReturn: User = new User();
+      userToReturn = await UserService.getUser(1);
+
+      return userToReturn;
     } catch (err) {
-        console.log('Error: ', err.message);
+      console.log('Error: ', err.message);
+    }
+  }
+
+  private async getMessages() {
+    try {
+      this.messages = await MessageService.getMessagesInChat(1);
+
+      console.log(this.messages);
+    } catch (err) {
+      console.log('Error: ', err.message);
     }
   }
 
@@ -199,7 +237,32 @@ export default class Chat extends Vue {
     UserService.addUser(this.user2);
   }
 
+  private sendMessageToDatabase() {
+    console.log('this.messageToSend: ' + this.messageToSend);
+    const sent: string = moment().format('YYYY-MM-DD h:mm A');
+    MessageService.addMessage({
+      content: this.messageToSend,
+      sent: sent,
+      read: false,
+      chatId: 1,
+      userId: 1
+    });
+  }
+
+  private sendMsg() {
+    const sent: string = moment().format('hh:mm, DD.MM.YY');
+    this.socket.emit('SEND_MESSAGE', {
+      content: this.messageToSend,
+      sent: sent,
+      read: false,
+      chatId: 1,
+      userId: 1
+    });
+    this.messageToSend = '';
+  }
+
+  private isItMyMessage(userid: number): boolean {
+    return this.user.id === userid;
+  }
 }
-
-
 </script>
