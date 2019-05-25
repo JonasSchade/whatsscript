@@ -16,12 +16,6 @@ export default new Router({
     //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     // }
     {
-      path: '/',
-      redirect: '/login',
-      name: 'Login',
-      component: () => import('./components/TheLogin.vue')
-    },
-    {
       path: '/login',
       name: 'Login',
       component: () => import('./components/TheLogin.vue')
@@ -31,13 +25,6 @@ export default new Router({
       path: '/chat',
       name: 'Chat',
       component: () => import('./components/TheChat.vue')
-    },
-
-    {
-      path: '/settings',
-      name: 'Settings',
-      component: () => import ('./components/TheSettings.vue')
-
     }
   ]
 });

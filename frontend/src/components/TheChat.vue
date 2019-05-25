@@ -2,7 +2,7 @@
   <div class="container">
     <!--chat-history-->
     <div class="chat-history">
-       <message-component
+      <message-component
         :user="user.username"
         sent="12:00, Today"
         :own="false"
@@ -17,7 +17,7 @@
       <message-component
         v-for="m in messages"
         :key="m.id"
-        :user="getUser(m.userId).username"
+        :user="getUsername(m.userId)"
         :sent="m.sent"
         :own="isItMyMessage(m.userId)"
         :content="m.content"
@@ -30,113 +30,18 @@
         v-model="messageToSend"
         name="message-to-send"
         id="message-to-send"
-        placeholder="Type your message"
+        placeholder="Gib deine Nachricht ein"
         rows="3"
       ></textarea>
-      <button @click="sendMsg()">Send</button>
+      <v-btn class="black" fab="true" round="true" @click="sendMsg()">
+        <v-icon color="#45efbf">send</v-icon>
+      </v-btn>
     </div>
     <button @click="addUser()">Add User</button>
     <button @click="updateUser()">Update User</button>
     <button @click="deleteUser()">Delete User</button>
   </div>
 </template>
-
-<style lang="scss">
-$green: #86bb71;
-$blue: #94c2ed;
-$gray: #92959e;
-
-.container {
-  margin-right: auto;
-  margin-left: auto;
-}
-
-ul {
-  list-style: none;
-}
-
-.chat-history {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto;
-
-  /*
-    padding: 30px 30px 20px;
-    border-bottom: 2px solid white;
-    overflow-y: scroll;
-    height: 575px;
-    
-        .message-data {
-        margin-bottom: 15px;
-        }
-        
-        .message-data-time {
-        color: lighten($gray, 8%);
-        padding-left: 6px;
-        }
-        */
-}
-.message {
-  color: white;
-  padding: 18px 20px;
-  line-height: 26px;
-  font-size: 16px;
-  border-radius: 7px;
-  margin-bottom: 30px;
-  width: 90%;
-  position: relative;
-}
-
-.align-right {
-  text-align: right;
-}
-
-.float-right {
-  float: right;
-}
-
-.chat-message {
-  padding: 30px;
-
-  textarea {
-    width: 100%;
-    border: none;
-    padding: 10px 20px;
-    font: 14px/22px "Lato", Arial, sans-serif;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    resize: none;
-  }
-
-  button {
-    float: right;
-    color: #1e90ff;
-    font-size: 16px;
-    text-transform: uppercase;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    background: #f2f5f8;
-  }
-}
-.other-message {
-  background: $green;
-}
-
-.my-message {
-  background: $blue;
-}
-
-.clearfix:after {
-  visibility: hidden;
-  display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
-}
-</style>
-
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
@@ -165,7 +70,7 @@ export default class Chat extends Vue {
     password: 'Leer',
     picture: 'Leer',
     status: 'Leer',
-    chats: [ 1, 2 ]
+    chats: [1, 2]
   };
   private user2: User = {
     id: 2,
@@ -174,7 +79,7 @@ export default class Chat extends Vue {
     password: 'a',
     picture: 'b',
     status: 'naja',
-    chats: [ 1 , 2 ]
+    chats: [1, 2]
   };
   private user3: User = {
     id: 3,
@@ -183,31 +88,28 @@ export default class Chat extends Vue {
     password: 'user3',
     picture: 'user3',
     status: 'user3',
-    chats: [ 2, 3 ]
+    chats: [2, 3]
   };
 
-  @Prop({
-    default: [{ content: 'heeey', sent: '2', chatId: 1, userId: 1, read: true }]
-  })
   public messages: Message[] = new Array();
+  public usersInChat: User[] = new Array();
 
   private mounted() {
     this.$store.state.loggedInUser = this.user;
-    this.getUser(1);
+    // this.getUsersInChat(thisChat);
     // this.getMessages();
-
+    this.usersInChat.push(this.user);
+    this.getMessages();
     this.socket.on('MESSAGE', (data: Message) => {
       this.messages = [...this.messages, data];
       // you can also do this.messages.push(data);
     });
   }
 
-  private async getUser(userId: number): User {
+  private async getUser(userId: number): Promise<User> {
     try {
       // this.user = await UserService.getUser(1);
-      let userToReturn: User = new User();
-      userToReturn = await UserService.getUser(1);
-
+      const userToReturn = await UserService.getUser(1);
       return userToReturn;
     } catch (err) {
       console.log('Error: ', err.message);
@@ -238,11 +140,10 @@ export default class Chat extends Vue {
   }
 
   private sendMessageToDatabase() {
-    console.log('this.messageToSend: ' + this.messageToSend);
     const sent: string = moment().format('YYYY-MM-DD h:mm A');
     MessageService.addMessage({
       content: this.messageToSend,
-      sent: sent,
+      sent,
       read: false,
       chatId: 1,
       userId: 1
@@ -250,19 +151,116 @@ export default class Chat extends Vue {
   }
 
   private sendMsg() {
-    const sent: string = moment().format('hh:mm, DD.MM.YY');
-    this.socket.emit('SEND_MESSAGE', {
-      content: this.messageToSend,
-      sent: sent,
-      read: false,
-      chatId: 1,
-      userId: 1
-    });
-    this.messageToSend = '';
+    if (this.messageToSend !== '') {
+      const sent: string = moment().format('hh:mm, DD.MM.YY');
+      this.socket.emit('SEND_MESSAGE', {
+        content: this.messageToSend,
+        sent,
+        read: false,
+        chatId: 1,
+        userId: 1
+      });
+      this.messageToSend = '';
+    }
   }
 
   private isItMyMessage(userid: number): boolean {
     return this.user.id === userid;
   }
+
+  private getUsername(userId: number): string {
+    const userWithId = this.usersInChat.find(user => user.id === userId);
+    if (userWithId !== undefined) {
+      return userWithId.username;
+    }
+    return '';
+  }
 }
 </script>
+
+<style lang="scss">
+$green: #86bb71;
+$blue: #94c2ed;
+$gray: #92959e;
+
+.container {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+ul {
+  list-style: none;
+}
+
+.chat-history {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+}
+.message {
+  color: white;
+  padding: 18px 20px;
+  line-height: 26px;
+  font-size: 16px;
+  border-radius: 7px;
+  margin-bottom: 30px;
+  width: 90%;
+  position: relative;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.float-right {
+  float: right;
+}
+
+.chat-message {
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid grey;
+
+  textarea {
+    width: 100%;
+    border: none;
+    padding: 10px 20px;
+    font: 14px/22px "Lato", Arial, sans-serif;
+    margin-bottom: 10px;
+    resize: none;
+  }
+
+  // To Remove Blue Border when clicking inside textarea
+  input:focus,
+  textarea {
+    outline: none !important;
+  }
+
+  button {
+    float: right;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-right: 30px;
+  }
+}
+.other-message {
+  background: $green;
+}
+
+.my-message {
+  background: $blue;
+}
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+</style>

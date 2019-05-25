@@ -1,10 +1,11 @@
 <template>
   <div :class="own ? 'own' : ''">
     <div class="lbl-info">
+      <span class="message-data-user" v-if="!own">{{user}}</span>
       <span id="message-data-time">{{sent}}</span>
-      <span id="message-data-user">{{user}}</span>
+      <span class="message-data-user" v-if="own">{{user}}</span>
     </div>
-    <div class="message-body elevation-1" >
+    <div class="message-body elevation-1">
       <span>{{content}}</span>
     </div>
   </div>
@@ -15,11 +16,11 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 
 @Component
 export default class Message extends Vue {
-  @Prop() private content: string;
+  @Prop() private content?: string;
 
-  @Prop() private user: string;
+  @Prop() private user?: string;
 
-  @Prop() private sent: string;
+  @Prop() private sent?: string;
 
   @Prop() private own?: boolean;
 }
@@ -45,17 +46,20 @@ export default class Message extends Vue {
 }
 
 .own {
-    > .lbl-info {
-        text-align: right;
-    }
-    > .message-body {
-        background-color: #94c2ed;
-        float: right;
-    }
+  > .lbl-info {
+    text-align: right;
+  }
+  > .message-body {
+    background-color: #94c2ed;
+    float: right;
+  }
 }
 
 #message-data-time {
   color: grey;
+}
+.message-data-user {
+  font-weight: bold;
 }
 </style>
     

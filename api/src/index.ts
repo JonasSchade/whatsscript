@@ -56,14 +56,11 @@ const server = app.listen(PORT, () => {
 
 const io = require('socket.io')(server);
 
-
 io.on('connection', function(socket: any) {
     console.log("A User has connected to: Socket"+socket.id)
     socket.on('SEND_MESSAGE', function(message: Message) {
         io.emit('MESSAGE', message);
-        console.log(message);
-     
-        
-    
+        const messageToSave = new Message({content: message.content, sent: message.sent, read: message.read, chatId: message.chatId, userId: message.userId});
+        messageToSave.save();
     });
 });
