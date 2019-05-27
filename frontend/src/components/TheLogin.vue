@@ -7,7 +7,7 @@
             <v-flex xs12 sm8 md4>
                 <v-card class="elevation-12">
                 <v-toolbar dark color="primary">
-                    <v-toolbar-title>Login</v-toolbar-title>
+                    <v-toolbar-title id="Login">Login</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-tooltip bottom>
                     </v-tooltip>
@@ -20,7 +20,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary">Login</v-btn>
+                    <v-btn v-model="loginUserInput" color="primary" @click="loginUser()">Login</v-btn>
                 </v-card-actions>
                 </v-card>
             </v-flex>
@@ -32,9 +32,64 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import { UserService } from '../services/user.service';
+import { User } from '../models/user';
+import App from '../App.vue';
 
 @Component
-export default class Login extends Vue {}
+export default class Login extends Vue {
+    private loginUserInput: string = '';
+    private loginUserPw: string = '';
+
+    @Prop({ type: Object as () => User })
+    private user1: User = {
+        id: 1,
+        username: 'user1',
+        email: 'Leer',
+        password: '1234',
+        picture: 'Leer',
+        status: 'Leer',
+        chats: [1, 2]
+    };
+    private user2: User = {
+        id: 2,
+        username: 'user2',
+        email: 'Leer',
+        password: '1234',
+        picture: 'Leer',
+        status: 'Leer',
+        chats: [1,2],
+
+    };
+    
+    private loginUser(){
+       
+        if(this.loginUserInput === this.user1.username){
+        
+            if(this.loginUserPw === this.user1.password){
+                this.$store.state.loggedInUser = this.user1;
+                this.$router.push('/chat')
+                console.log(this.user1.username + "ist eingeloggt");
+            }else{
+                console.log("Passwort eingeben")
+            }
+
+        }else if(this.loginUserInput === this.user2.username){
+
+            if(this.loginUserPw === this.user2.password){
+                this.$store.state.loggedInUser = this.user2;
+                this.$router.push('/chat')
+                console.log(this.user2.username + "ist eingeloggt");
+            }else{
+                console.log("Passwort eingeben")
+            }
+        }else{
+            console.log("Benutzername oder Password ist falsch ")
+
+        }
+    }
+
+}
 </script> 
 
