@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as socketIo from 'socket.io';
 
 import { Request, Response } from 'express';
 import { Sequelize } from 'sequelize-typescript';
@@ -54,13 +55,13 @@ const server = app.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);
 });
 
-const io = require('socket.io')(server);
+const io = socketIo(server);
 
-io.on('connection', function(socket: any) {
-    console.log("A User has connected to: Socket"+socket.id)
-    socket.on('SEND_MESSAGE', function(message: Message) {
+io.on('connection', (socket: any) => {
+    console.log('A User has connected to: Socket ' + socket.id);
+    socket.on('SEND_MESSAGE', (message: Message) => {
         io.emit('MESSAGE', message);
-        const messageToSave = new Message({content: message.content, sent: message.sent, read: message.read, chatId: message.chatId, userId: message.userId});
+        const messageToSave = new Message({ ...message });
         messageToSave.save();
     });
 });
