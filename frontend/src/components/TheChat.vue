@@ -95,9 +95,10 @@ export default class Chat extends Vue {
   public usersInChat: User[] = new Array();
 
   private mounted() {
-    this.$store.state.loggedInUser = this.user;
+    // this.$store.state.loggedInUser = this.user;
     // this.getUsersInChat(thisChat);
     // this.getMessages();
+    this.user = this.$store.state.loggedInUser;
     this.usersInChat.push(this.user);
     this.getMessages();
     this.socket.on('MESSAGE', (data: Message) => {
