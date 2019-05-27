@@ -35,9 +35,9 @@ MessageRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
 
 // create new message
 MessageRouter.post('/', wrapAsync(async (req: Request, res: Response) => {
-    //const message: Message|null = await Message.findByPk(req.params.id);
+    // const message: Message|null = await Message.findByPk(req.params.id);
 
-    //if (message != null) throw { status: 404, responseMessage: `message with id ${req.body.id} already exists`};
+    // if (message != null) throw { status: 404, responseMessage: `message with id ${req.body.id} already exists`};
     const message = new Message({
         content: req.body.content,
         sent: req.body.sent,
@@ -48,7 +48,7 @@ MessageRouter.post('/', wrapAsync(async (req: Request, res: Response) => {
     await message.save();
 
     res.status(200).json(message);
-    //res.status(200).json(message);
+    // res.status(200).json(message);
 }));
 
 // message updaten ?

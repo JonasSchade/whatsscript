@@ -102,7 +102,8 @@ export default class Chat extends Vue {
       const userToReturn = await UserService.getUser(1);
       return userToReturn;
     } catch (err) {
-      console.log('Error: ', err.message);
+      console.error('Error: ', err.message);
+      throw err;
     }
   }
 

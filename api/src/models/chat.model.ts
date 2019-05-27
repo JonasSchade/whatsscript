@@ -4,7 +4,7 @@ import { UserInChat } from './userInChat.model';
 import { BelongsToMany, HasMany, Table, Column, Model, DataType, DefaultScope } from 'sequelize-typescript';
 
 @DefaultScope({
-    include: [ { model: () => Message, order: ['date', 'DESC'], limit: 1 } ]
+    include: [ { model: () => Message,  order: [['id', 'DESC']], limit: 1 } ]
 }) // gib letzte Nachricht zum Chat aus
 @Table
 export class Chat extends Model<Chat> {
