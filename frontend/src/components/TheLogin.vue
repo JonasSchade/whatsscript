@@ -59,33 +59,33 @@ export default class Login extends Vue {
         password: '1234',
         picture: 'Leer',
         status: 'Leer',
-        chats: [1,2],
+        chats: [1, 2]
 
     };
     
-    private loginUser(){
+    private loginUser() {
        
-        if(this.loginUserInput === this.user1.username){
+        if (this.loginUserInput === this.user1.username) {
         
-            if(this.loginUserPw === this.user1.password){
+            if (this.loginUserPw === this.user1.password) {
                 this.$store.state.loggedInUser = this.user1;
-                this.$router.push('/chat')
-                console.log(this.user1.username + "ist eingeloggt");
-            }else{
-                console.log("Passwort eingeben")
+                this.$router.push('/chat');
+                console.log(this.user1.username + 'ist eingeloggt');
+            } else {
+                console.log('Passwort eingeben');
             }
 
-        }else if(this.loginUserInput === this.user2.username){
+        } else if (this.loginUserInput === this.user2.username) {
 
-            if(this.loginUserPw === this.user2.password){
+            if (this.loginUserPw === this.user2.password) {
                 this.$store.state.loggedInUser = this.user2;
-                this.$router.push('/chat')
-                console.log(this.user2.username + "ist eingeloggt");
-            }else{
-                console.log("Passwort eingeben")
+                this.$router.push('/chat');
+                console.log(this.user2.username + 'ist eingeloggt');
+            } else {
+                console.log('Passwort eingeben');
             }
-        }else{
-            console.log("Benutzername oder Password ist falsch ")
+        } else {
+            console.log('Benutzername oder Password ist falsch ');
 
         }
     }
