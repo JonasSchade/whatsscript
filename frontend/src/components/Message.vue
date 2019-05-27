@@ -1,9 +1,9 @@
 <template>
   <div :class="own ? 'own' : ''">
     <div class="lbl-info">
-      <span class="message-data-user" v-if="!own">{{user}}</span>
+      <span class="message-data-user" v-if="!own">{{user}} </span>
       <span id="message-data-time">{{sent}}</span>
-      <span class="message-data-user" v-if="own">{{user}}</span>
+      <span class="message-data-user" v-if="own"> {{user}}</span>
     </div>
     <div class="message-body elevation-1">
       <span>{{content}}</span>
@@ -35,6 +35,7 @@ export default class Message extends Vue {
 */
 
 .message-body {
+  display: inline-block;
   background-color: #86bb71;
   border-radius: 10px;
   padding: 20px;

@@ -14,13 +14,13 @@
                 </v-toolbar>
                 <v-card-text>
                     <v-form>
-                    <v-text-field prepend-icon="person" name="login" label="Login" type="text"></v-text-field>
-                    <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password"></v-text-field>
+                    <v-text-field v-model="loginUserInput" prepend-icon="person" name="login" label="Login" type="text"></v-text-field>
+                    <v-text-field v-model="loginUserPw" prepend-icon="lock" name="password" label="Password" id="password" type="password"></v-text-field>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn v-model="loginUserInput" color="primary" @click="loginUser()">Login</v-btn>
+                    <v-btn color="primary" @click="loginUser()">Login</v-btn>
                 </v-card-actions>
                 </v-card>
             </v-flex>
@@ -59,33 +59,34 @@ export default class Login extends Vue {
         password: '1234',
         picture: 'Leer',
         status: 'Leer',
-        chats: [1,2],
-
+        chats: [1, 2]
     };
     
-    private loginUser(){
+    private loginUser() {
        
-        if(this.loginUserInput === this.user1.username){
+        if (this.loginUserInput === this.user1.username) {
         
-            if(this.loginUserPw === this.user1.password){
-                this.$store.state.loggedInUser = this.user1;
+            if (this.loginUserPw === this.user1.password) {
+                this.$store.commit('changeUser', this.user1);
+                // this.$store.state.loggedInUser.username = this.user1.username;
                 this.$router.push('/chat')
-                console.log(this.user1.username + "ist eingeloggt");
-            }else{
-                console.log("Passwort eingeben")
+                console.log(this.user1.username + 'ist eingeloggt');
+            } else {
+                console.log('Passwort eingeben');
             }
 
-        }else if(this.loginUserInput === this.user2.username){
+        } else if(this.loginUserInput === this.user2.username){
 
             if(this.loginUserPw === this.user2.password){
-                this.$store.state.loggedInUser = this.user2;
+                this.$store.commit('changeUser', this.user2);
+                // this.$store.state.loggedInUser.username = this.user2.username;
                 this.$router.push('/chat')
-                console.log(this.user2.username + "ist eingeloggt");
-            }else{
-                console.log("Passwort eingeben")
+                console.log(this.user2.username + 'ist eingeloggt');
+            } else {
+                console.log('Passwort eingeben');
             }
-        }else{
-            console.log("Benutzername oder Password ist falsch ")
+        } else {
+            console.log('Benutzername oder Password ist falsch ');
 
         }
     }

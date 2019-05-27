@@ -33,13 +33,10 @@
         placeholder="Gib deine Nachricht ein"
         rows="3"
       ></textarea>
-      <v-btn class="black" fab="true" round="true" @click="sendMsg()">
+      <v-btn class="black" fab round @click="sendMsg()">
         <v-icon color="#45efbf">send</v-icon>
       </v-btn>
     </div>
-    <button @click="addUser()">Add User</button>
-    <button @click="updateUser()">Update User</button>
-    <button @click="deleteUser()">Delete User</button>
   </div>
 </template>
 
@@ -74,21 +71,12 @@ export default class Chat extends Vue {
   };
   private user2: User = {
     id: 2,
-    username: 'Franz',
-    email: 'franz.com',
-    password: 'a',
-    picture: 'b',
-    status: 'naja',
+    username: 'user2',
+    email: 'Leer',
+    password: 'Leer',
+    picture: 'Leer',
+    status: 'Leer',
     chats: [1, 2]
-  };
-  private user3: User = {
-    id: 3,
-    username: 'user3',
-    email: 'user3',
-    password: 'user3',
-    picture: 'user3',
-    status: 'user3',
-    chats: [2, 3]
   };
 
   public messages: Message[] = new Array();
@@ -97,9 +85,10 @@ export default class Chat extends Vue {
   private mounted() {
     // this.$store.state.loggedInUser = this.user;
     // this.getUsersInChat(thisChat);
-    // this.getMessages();
     this.user = this.$store.state.loggedInUser;
+    // this.user.username = this.$store.state.loggedInUser.username;
     this.usersInChat.push(this.user);
+    this.usersInChat.push(this.user2);
     this.getMessages();
     this.socket.on('MESSAGE', (data: Message) => {
       this.messages = [...this.messages, data];
@@ -120,6 +109,7 @@ export default class Chat extends Vue {
   private async getMessages() {
     try {
       this.messages = await MessageService.getMessagesInChat(1);
+      console.log("Nachrichten" + this.messages)
 
       console.log(this.messages);
     } catch (err) {
@@ -132,8 +122,8 @@ export default class Chat extends Vue {
   }
 
   private updateUser() {
-    UserService.updateUser(1, this.user3);
-    console.log(this.user3);
+    // UserService.updateUser(1, this.user3);
+    // console.log(this.user3);
   }
 
   private addUser() {
@@ -159,14 +149,16 @@ export default class Chat extends Vue {
         sent,
         read: false,
         chatId: 1,
-        userId: 1
+        userId: this.user.id
       });
+      console.log("UUuuuuuserID" + this.user.id);
       this.messageToSend = '';
     }
   }
 
   private isItMyMessage(userid: number): boolean {
-    return this.user.id === userid;
+    console.log('this.$store.state.loggedInUser.id: ' + this.$store.state.loggedInUser.id);
+    return this.$store.state.loggedInUser.id === userid;
   }
 
   private getUsername(userId: number): string {
@@ -197,6 +189,7 @@ ul {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
+  padding-top: 60px;
 }
 .message {
   color: white;

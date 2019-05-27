@@ -1,22 +1,22 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { Chat } from './models/chat';
+import { User } from './models/user';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+interface StateType {
+  loggedInUser: User|null;
+}
+
+export default new Vuex.Store<StateType>({
   state: {
-    loggedInUser: {
-      username: String,
-      email: String,
-      password: String,
-      picture: String,
-      status: String,
-      chats: [Number]
-    }
+    loggedInUser: null,
   },
   mutations: {
-
+    changeUser(state, user: User) {
+      state.loggedInUser = user;
+    }
   },
   actions: {
 
