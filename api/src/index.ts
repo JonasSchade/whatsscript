@@ -13,6 +13,7 @@ import { UserInChat } from './models/userInChat.model';
 import { UserRouter } from './routers/user.router';
 import { ChatRouter } from './routers/chat.router';
 import { MessageRouter } from './routers/message.router';
+import { wrapAsync } from './utils/express.utils';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
@@ -50,6 +51,42 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/user', UserRouter);
 app.use('/chat', ChatRouter);
 app.use('/message', MessageRouter);
+
+app.post('/setup', wrapAsync(async (req: Request, res: Response) => {
+
+    // delete everything
+    UserInChat.destroy({where: {}});
+    Message.destroy({where: {}});
+    Chat.destroy({where: {}});
+    User.destroy({where: {}});
+
+    // create default user
+    let u1 = new User({
+        username: 'user1',
+        email: 'user1@example.com',
+        password: '1234',
+        status: 'Ich bin ein User'
+    });
+    let u2 = new User({
+        username: 'user2',
+        email: 'user2@example.com',
+        password: '1234',
+        status: 'Ich bin der zweite User'
+    });
+
+    u1 = await u1.save();
+    u2 = await u2.save();
+
+    // generate chat
+    let c1 = new Chat({ chatName: ''});
+    c1 = await c1.save();
+
+    // @ts-ignore
+    c1.addUsers([u1, u2]);
+
+    res.status(200).end();
+
+}));
 
 const server = app.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);
