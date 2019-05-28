@@ -19,7 +19,9 @@
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
-                    <v-spacer></v-spacer>
+                    <v-spacer>
+                        <p>{{error}}</p>
+                    </v-spacer>
                     <v-btn color="primary" @click="loginUser()">Login</v-btn>
                 </v-card-actions>
                 </v-card>
@@ -41,6 +43,7 @@ import App from '../App.vue';
 export default class Login extends Vue {
     private loginUserInput: string = '';
     private loginUserPw: string = '';
+    private error: string = '';
 
     @Prop({ type: Object as () => User })
     private user1: User = {
@@ -57,7 +60,7 @@ export default class Login extends Vue {
         username: 'user2',
         email: 'Leer',
         password: '1234',
-        picture: 'Leer',
+        picture: 'Leer',    
         status: 'Leer',
         chats: [1, 2]
     };
@@ -72,7 +75,8 @@ export default class Login extends Vue {
                 this.$router.push('/chat')
                 console.log(this.user1.username + 'ist eingeloggt');
             } else {
-                console.log('Passwort eingeben');
+                this.error = 'Passwort ist falsch.';
+                console.log('Passwort ist falsch');
             }
 
         } else if(this.loginUserInput === this.user2.username){
@@ -83,10 +87,13 @@ export default class Login extends Vue {
                 this.$router.push('/chat')
                 console.log(this.user2.username + 'ist eingeloggt');
             } else {
-                console.log('Passwort eingeben');
+                                this.error = 'Passwort ist falsch.';
+
+                console.log('Passwort ist falsch');
             }
         } else {
-            console.log('Benutzername oder Password ist falsch ');
+            this.error = 'Benutzername oder Passwort ist falsch';
+            console.log('Benutzername oder Passwort ist falsch ');
 
         }
     }
