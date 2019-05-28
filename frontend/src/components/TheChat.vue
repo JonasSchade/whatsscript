@@ -3,18 +3,6 @@
     <!--chat-history-->
     <div class="chat-history">
       <message-component
-        :user="user.username"
-        sent="12:00, Today"
-        :own="false"
-        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
-      ></message-component>
-      <message-component
-        :user="user.username"
-        sent="12:00, Today"
-        :own="true"
-        content="Hallo Mensch, hier ist ein anderer Mensch dkfksdfsdf djksfb jsdfs dkfksdbf k sdjnfjksd  sdjfn sdlf nsdf lssdf sdfl sf sdf fs sdf sdf sdf "
-      ></message-component>
-      <message-component
         v-for="m in messages"
         :key="m.id"
         :user="getUsername(m.userId)"
@@ -33,8 +21,8 @@
         placeholder="Gib deine Nachricht ein"
         rows="3"
       ></textarea>
-      <v-btn class="black" fab round @click="sendMsg()">
-        <v-icon color="#45efbf">send</v-icon>
+      <v-btn icon large @click="sendMsg()">
+        <v-icon color="black" medium>send</v-icon>
       </v-btn>
     </div>
   </div>
@@ -78,6 +66,15 @@ export default class Chat extends Vue {
     status: 'Leer',
     chats: [1, 2]
   };
+  private user1: User = {
+    id: 1,
+    username: 'user1',
+    email: 'Leer',
+    password: 'Leer',
+    picture: 'Leer',
+    status: 'Leer',
+    chats: [1, 2]
+  };
 
   public messages: Message[] = new Array();
   public usersInChat: User[] = new Array();
@@ -89,6 +86,7 @@ export default class Chat extends Vue {
     // this.user.username = this.$store.state.loggedInUser.username;
     this.usersInChat.push(this.user);
     this.usersInChat.push(this.user2);
+    this.usersInChat.push(this.user1);
     this.getMessages();
     this.socket.on('MESSAGE', (data: Message) => {
       this.messages = [...this.messages, data];
