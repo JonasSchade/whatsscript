@@ -11,7 +11,7 @@ interface StateType {
 
 export default new Vuex.Store<StateType>({
   state: {
-    loggedInUser: null,
+    loggedInUser: null
   },
   mutations: {
     changeUser(state, user: User) {

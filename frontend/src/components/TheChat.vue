@@ -91,6 +91,7 @@ export default class Chat extends Vue {
     this.socket.on('MESSAGE', (data: Message) => {
       this.messages = [...this.messages, data];
       // you can also do this.messages.push(data);
+      this.scrollToBottom();
     });
   }
 
@@ -108,9 +109,6 @@ export default class Chat extends Vue {
   private async getMessages() {
     try {
       this.messages = await MessageService.getMessagesInChat(1);
-      console.log("Nachrichten" + this.messages)
-
-      console.log(this.messages);
     } catch (err) {
       console.log('Error: ', err.message);
     }
@@ -120,24 +118,8 @@ export default class Chat extends Vue {
     UserService.deleteUser(1);
   }
 
-  private updateUser() {
-    // UserService.updateUser(1, this.user3);
-    // console.log(this.user3);
-  }
-
   private addUser() {
     UserService.addUser(this.user2);
-  }
-
-  private sendMessageToDatabase() {
-    const sent: string = moment().format('YYYY-MM-DD h:mm A');
-    MessageService.addMessage({
-      content: this.messageToSend,
-      sent,
-      read: false,
-      chatId: 1,
-      userId: 1
-    });
   }
 
   private sendMsg() {
@@ -150,7 +132,6 @@ export default class Chat extends Vue {
         chatId: 1,
         userId: this.user.id
       });
-      console.log("UUuuuuuserID" + this.user.id);
       this.messageToSend = '';
     }
   }
@@ -166,6 +147,14 @@ export default class Chat extends Vue {
       return userWithId.username;
     }
     return '';
+  }
+  
+  private updated() {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    window.scrollTo(0,document.body.scrollHeight);
   }
 }
 </script>

@@ -61,16 +61,21 @@ export class UserService {
         } catch (err) {
             throw new Error('Error in getUser()');
         }
-        /*
-        response = {
-            username: 'Timm',
-            email: 'a',
-            password: 'b',
-            picture: 'c',
-            status: 'Toller Status',
-            chats: [{chatname: 'chat1', picture: 'a', users: []}]
+
+        return response;
+    }
+    
+    public static async getUsersByUsername(username: string): Promise<User[]> {
+        let response: User[];
+
+        try {
+            const body: User[]|string = await rp.get('http://localhost:3000/user/username/' + username);
+
+            response = typeof body === 'string' ? JSON.parse(body) : body;
+        } catch (err) {
+            throw new Error('Error in getUserByUsername()');
         }
-        */
+
         return response;
     }
 

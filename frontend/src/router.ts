@@ -20,7 +20,11 @@ export default new Router({
       name: 'Login',
       component: () => import('./components/TheLogin.vue')
     },
-
+    {
+      path: '/registration',
+      name: 'Registration',
+      component: () => import('./components/TheRegistration.vue')
+    },
     {
       path: '/chat',
       name: 'Chat',
