@@ -1,14 +1,15 @@
 <template>
- <v-toolbar class="toolbar" dark color="primary">
+  <v-toolbar class="toolbar" dark color="primary">
+    <v-btn icon>
+      <v-icon large>menu</v-icon>
+    </v-btn>
 
-    <v-toolbar-side-icon></v-toolbar-side-icon>
-   
     <v-toolbar-title class="title"> Welcome to Whatscript! {{ (loggedInUser || { username: ''}).username }}</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
-    <v-btn icon>
-      <v-icon>more_vert</v-icon>
+    <v-btn icon @click.stop="showChartSettings()">
+      <v-icon large>info</v-icon>
     </v-btn>
 
   </v-toolbar>
@@ -32,5 +33,9 @@ import { mapState } from 'vuex';
   }
 })
 export default class Toolbar extends Vue {
+
+  private showChartSettings(): void {
+    this.$store.commit('changeDrawer');
+  }
 }
 </script> 

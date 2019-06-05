@@ -25,6 +25,16 @@
         <v-icon color="black" medium>send</v-icon>
       </v-btn>
     </div>
+    <v-navigation-drawer
+      class="chat-settings"
+      v-model="$store.state.rightDrawerActive"
+      absolute
+      right
+      temporary
+      width="400"
+    >
+      <chat-settings-component :chat="chat"></chat-settings-component>
+    </v-navigation-drawer>
   </div>
 </template>
 
@@ -34,14 +44,17 @@ import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
 import { User } from '../models/user';
 import { Message } from '../models/message';
+import { Chat } from '../models/chat';
 import MessageComponent from '@/components/Message.vue';
+import ChatSettingsComponent from '@/components/TheChatSettings.vue';
 import moment from 'moment';
 import io from 'socket.io-client';
+import { ChatService } from '../services/chat.service';
 
 @Component({
-  components: { MessageComponent }
+  components: { MessageComponent, ChatSettingsComponent }
 })
-export default class Chat extends Vue {
+export default class TheChat extends Vue {
   private messageToSend: string = '';
   private message: string = '';
   private socket = io('localhost:3000');
@@ -76,6 +89,7 @@ export default class Chat extends Vue {
     chats: [1, 2]
   };
 
+  private chat: Chat = {chatname: 'kein Name', picture: '', users: []};
   public messages: Message[] = new Array();
   public usersInChat: User[] = new Array();
 
@@ -88,6 +102,8 @@ export default class Chat extends Vue {
     this.usersInChat.push(this.user2);
     this.usersInChat.push(this.user1);
     this.getMessages();
+    this.$store.commit('setSelectedChat', 1);
+    this.setChat(1);
     this.socket.on('MESSAGE', (data: Message) => {
       this.messages = [...this.messages, data];
       // you can also do this.messages.push(data);
@@ -104,6 +120,11 @@ export default class Chat extends Vue {
       console.error('Error: ', err.message);
       throw err;
     }
+  }
+
+  private async setChat(chatId: number) {
+    this.chat = await ChatService.getChat(chatId);
+    console.log(this.chat);
   }
 
   private async getMessages() {
@@ -154,7 +175,7 @@ export default class Chat extends Vue {
   }
 
   private scrollToBottom(): void {
-    window.scrollTo(0,document.body.scrollHeight);
+    window.scrollTo(0, document.body.scrollHeight);
   }
 }
 </script>
@@ -245,4 +266,9 @@ ul {
   clear: both;
   height: 0;
 }
+
+.chat-settings {
+  margin-top: 20px;
+}
+
 </style>

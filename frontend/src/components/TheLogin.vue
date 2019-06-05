@@ -78,7 +78,7 @@ export default class Login extends Vue {
     }
   }
 
-  private verifyPassword(plainPassword :string, hashedPassword: string): boolean {
+  private verifyPassword(plainPassword: string, hashedPassword: string): boolean {
     return passwordHash.verify(plainPassword, hashedPassword);
   }
 }

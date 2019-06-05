@@ -16,7 +16,7 @@ export class ChatService {
             body: {
                 chatname: chat.chatname,
                 picture: chat.picture,
-                user: chat.users
+                users: chat.users
             },
             json: true // Automatically stringifies the body to JSON
         };
@@ -35,7 +35,7 @@ export class ChatService {
             body: {
                 chatname: chat.chatname,
                 picture: chat.picture,
-                user: chat.users
+                users: chat.users
             },
             json: true // Automatically stringifies the body to JSON
         };
@@ -64,7 +64,7 @@ export class ChatService {
         let response: User[];
 
         try {
-            const body = await rp.get('http://localhost:3000/usersInChat/' + chatId);
+            const body = await rp.get('http://localhost:3000/chat/' + chatId + '/users');
             response = JSON.parse(body);
         } catch (err) {
             throw new Error('Error in getUsersInChat()');
