@@ -92,5 +92,17 @@ export class UserService {
         return response;
     }
 
+    public static async getAllUsers(): Promise<User[]> {
+        let response: User[];
+
+        try {
+            const body = await rp.get('http://localhost:3000/user');
+            response = JSON.parse(body);
+        } catch (err) {
+            throw new Error('Error in getAllUsers()');
+        }
+
+        return response;
+    }
 
 }
