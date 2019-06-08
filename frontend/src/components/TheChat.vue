@@ -35,7 +35,20 @@
     >
       <chat-settings-component :chat="chat"></chat-settings-component>
     </v-navigation-drawer>
+    
+  <v-navigation-drawer
+      class="chat-view"
+      v-model="$store.state.leftDrawerActive"
+      absolute
+      left
+      temporary
+      width="400"
+    >
+      <chat-view-component :chat="chat"></chat-view-component>
+  </v-navigation-drawer>
+  
   </div>
+
 </template>
 
 <script lang="ts">
@@ -47,12 +60,13 @@ import { Message } from '../models/message';
 import { Chat } from '../models/chat';
 import MessageComponent from '@/components/Message.vue';
 import ChatSettingsComponent from '@/components/TheChatSettings.vue';
+import ChatViewComponent from '@/components/TheChatView.vue'; 
 import moment from 'moment';
 import io from 'socket.io-client';
 import { ChatService } from '../services/chat.service';
 
 @Component({
-  components: { MessageComponent, ChatSettingsComponent }
+  components: { MessageComponent, ChatSettingsComponent, ChatViewComponent }
 })
 export default class TheChat extends Vue {
   private messageToSend: string = '';
@@ -267,7 +281,7 @@ ul {
   height: 0;
 }
 
-.chat-settings {
+.chat-settings{
   margin-top: 20px;
 }
 
