@@ -73,5 +73,8 @@ export class ChatService {
         return response;
     }
 
+    public static async deleteUserFromChat(userId: number) {
+        rp.delete('http://localhost:3000/userInChat/' + userId);
+    }
 
 }

@@ -66,11 +66,10 @@ export default class ChatSettings extends Vue {
   private publicPath: string = process.env.BASE_URL || '/';
   private status: string = 'Kein Status';
   private user?: User;
-  private chatname?: string = 'Kein Chatname';
   private usersInChat: User[] = [];
 
   @Prop()
-  private chat: Chat = {id: 0, chatname: 'Kein Name', picture: '', users: []};
+  private chat: Chat = {id: undefined, chatname: 'Kein Name', picture: '', users: []};
 
   private mounted() {
     this.user = this.$store.state.loggedInUser;
@@ -87,7 +86,7 @@ export default class ChatSettings extends Vue {
     }
   }
 
-  private addUser() {
+  private addUserToChat(user: User) {
     if (!this.user) return;
     UserService.addUser(this.user);
   }
@@ -107,7 +106,10 @@ export default class ChatSettings extends Vue {
       }
   }
 
-  private deleteUserFromChat(userId: number): void {}
+  private async deleteUserFromChat(userId: number) {
+    await ChatService.deleteUserFromChat(userId);
+    this.usersInChat = this.usersInChat.filter(u => u.id !== userId);
+  }
 }
 </script>
 

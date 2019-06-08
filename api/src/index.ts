@@ -14,6 +14,7 @@ import { UserRouter } from './routers/user.router';
 import { ChatRouter } from './routers/chat.router';
 import { MessageRouter } from './routers/message.router';
 import { wrapAsync } from './utils/express.utils';
+import { UserInChatRouter } from './routers/userInChat.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
@@ -51,6 +52,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/user', UserRouter);
 app.use('/chat', ChatRouter);
 app.use('/message', MessageRouter);
+app.use('/userInChat', UserInChatRouter);
 
 app.post('/setup', wrapAsync(async (req: Request, res: Response) => {
 
