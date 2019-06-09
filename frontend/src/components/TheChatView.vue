@@ -85,9 +85,9 @@ import { UserService } from '../services/user.service';
   }
 })
 
-export default class TheChatView extends Vue{
+export default class TheChatView extends Vue {
   private allChats: Chat[] = [];
-  private user?: User;
+  private user: User = {id: undefined, username: '', email: '', password: '', picture: '', status: '', chats: []};
   private chatname?: string;
   
 
@@ -96,7 +96,7 @@ private chat: Chat = {id: 0, chatname: 'Kein Name', picture: '', users: []};
 
 private mounted() {
   this.user = this.$store.state.loggedInUser;
-  this.setAllChatsForUser;
+  this.setAllChatsForUser();
 }
 
 private async getUser(userId: number): Promise<User> {
@@ -112,8 +112,8 @@ private async getUser(userId: number): Promise<User> {
 
 @Watch('allChats')
 private async setAllChatsForUser() {
-  if (this.chat.id !== undefined) {
-    this.allChats = await UserService.getAllChatsForUser();
+  if (this.user.id !== undefined) {
+    this.allChats = await UserService.getAllChatsForUser(this.user.id);
   }
 }
 

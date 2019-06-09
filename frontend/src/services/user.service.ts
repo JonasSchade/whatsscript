@@ -105,10 +105,10 @@ export class UserService {
         return response;
     }
 
-    public static async getAllChatsForUser(userId: number): Promise<Chat[]>{
-        let response: Chat[]
+    public static async getAllChatsForUser(userId: number): Promise<Chat[]> {
+        let response: Chat[];
         try {
-            const body = await rp.get('http://localhost:3000/user/' + userId + '/chats')
+            const body = await rp.get('http://localhost:3000/user/' + userId + '/chats');
             response = JSON.parse(body);
         } catch (err) {
             throw new Error('Error in getAllChatsForUser()');

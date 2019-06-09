@@ -26,7 +26,7 @@ export default new Vuex.Store<StateType>({
     changeDrawer(state) {
       state.rightDrawerActive = !state.rightDrawerActive;
     },
-    changeDrawerLeft(state){
+    changeDrawerLeft(state) {
       state.leftDrawerActive = !state.leftDrawerActive;
     },
     setSelectedChat(state, chatId) {

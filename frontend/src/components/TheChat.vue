@@ -60,7 +60,7 @@ import { Message } from '../models/message';
 import { Chat } from '../models/chat';
 import MessageComponent from '@/components/Message.vue';
 import ChatSettingsComponent from '@/components/TheChatSettings.vue';
-import ChatViewComponent from '@/components/TheChatView.vue'; 
+import ChatViewComponent from '@/components/TheChatView.vue';
 import moment from 'moment';
 import io from 'socket.io-client';
 import { ChatService } from '../services/chat.service';
