@@ -32,12 +32,12 @@
     </v-toolbar>    
     
     <v-divider></v-divider>
-    
+   
     <v-list two-line>
-      <template v-for="(chats, id) in allChats">
-        <v-divider v-if="id!=0" :key="id"></v-divider>
+      <template v-for="(chat, index) in allChats">
+        <v-divider v-if="index!=0" :key="index"></v-divider>
         
-        <v-list-tile :key="chats">
+        <v-list-tile :key="chat.chatname">
           <v-tile-avatar
             :tile="tile"
             :size="avatarSize"
@@ -47,7 +47,7 @@
           </v-tile-avatar>
 
           <v-list-tile-content>
-            <v-list-tile-title v-html="user.chat"></v-list-tile-title>
+            <v-list-tile-title v-html="chat.chatname"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </template>
@@ -78,6 +78,7 @@ import { Chat } from '../models/chat';
 import { User } from '../models/user';
 import { ChatService } from '../services/chat.service';
 import { UserService } from '../services/user.service';
+import ChatSettings from './TheChatSettings.vue';
 
 @Component({
   computed: {
@@ -87,34 +88,39 @@ import { UserService } from '../services/user.service';
 
 export default class TheChatView extends Vue {
   private allChats: Chat[] = [];
-  private user: User = {id: undefined, username: '', email: '', password: '', picture: '', status: '', chats: []};
-  private chatname?: string;
-  
+  private user?: User = {id: undefined, username: '', email: '', password: '', picture: '', status: '', chats: []};
+  private chatname?: string;  
 
 @Prop()
 private chat: Chat = {id: 0, chatname: 'Kein Name', picture: '', users: []};
 
 private mounted() {
   this.user = this.$store.state.loggedInUser;
-  this.setAllChatsForUser();
+  this.setAllChats();
+  console.log(this.allChats);
 }
 
-private async getUser(userId: number): Promise<User> {
-    try {
-      const userToReturn = await UserService.getUser(1);
-      return userToReturn;
-    } catch (err) {
-      console.error('Error: ', err.message);
-      throw err;
-    }
-}
-
-
-@Watch('allChats')
-private async setAllChatsForUser() {
-  if (this.user.id !== undefined) {
-    this.allChats = await UserService.getAllChatsForUser(this.user.id);
+private async getAllChatsForUser(userId: number){
+  try{
+  const chatsToReturn = await UserService.getAllChatsForUser(1);
+  return chatsToReturn;
+  }catch(err){
+    console.error('Error: ', err.message);
+    throw err;
   }
+}
+
+@Watch('chat')
+private async setAllChats() {
+    this.allChats = await ChatService.getAllChats();
+}
+
+private getChatName(chatId: number): string{
+  const chatWithId = this.allChats.find(chat => chat.id === chatId);
+  if(chatWithId !== undefined){
+    return chatWithId.chatname;
+  }
+  return 'test';
 }
 
 

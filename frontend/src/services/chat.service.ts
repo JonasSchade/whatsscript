@@ -60,6 +60,19 @@ export class ChatService {
         return response;
     }
 
+    public static async getAllChats(): Promise<Chat[]> {
+        let response: Chat[];
+
+        try {
+            const body = await rp.get('http://localhost:3000/chat');
+            response = JSON.parse(body);
+        } catch (err) {
+            throw new Error('Error in getAllChats()');
+        }
+     
+        return response;
+    }
+
     public static async getUsersInChat(chatId: number): Promise<User[]> {
         let response: User[];
 
