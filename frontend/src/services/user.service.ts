@@ -1,6 +1,7 @@
 import * as rp from 'request-promise-native';
 
 import { User } from '../models/user';
+import { Chat } from '../models/chat';
 
 export class UserService {
 
@@ -99,9 +100,19 @@ export class UserService {
             const body = await rp.get('http://localhost:3000/user');
             response = JSON.parse(body);
         } catch (err) {
-            throw new Error('Error in getAllUsers()');
+            throw new Error('Error in getAllUsers(): ' + err);
         }
+        return response;
+    }
 
+    public static async getAllChatsForUser(userId: number): Promise<Chat[]>{
+        let response: Chat[]
+        try {
+            const body = await rp.get('http://localhost:3000/user/' + userId + '/chats')
+            response = JSON.parse(body);
+        } catch (err) {
+            throw new Error('Error in getAllChatsForUser()');
+        }
         return response;
     }
 

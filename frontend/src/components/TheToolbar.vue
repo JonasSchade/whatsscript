@@ -1,6 +1,6 @@
 <template>
   <v-toolbar class="toolbar" dark color="primary">
-    <v-btn icon>
+    <v-btn icon @click.stop="showChatView()">
       <v-icon large>menu</v-icon>
     </v-btn>
 
@@ -36,6 +36,10 @@ export default class Toolbar extends Vue {
 
   private showChartSettings(): void {
     this.$store.commit('changeDrawer');
+  }
+
+  private showChatView(): void {
+    this.$store.commit('changeDrawerLeft');
   }
 }
 </script> 
