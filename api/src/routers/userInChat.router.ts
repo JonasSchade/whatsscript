@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { User } from '../models/user.model';
 import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
 import { UserInChat } from '../models/userInChat.model';
+import { Chat } from '../models/chat.model';
 import { UserRules } from '../rules/user.rules';
 import { matchedData } from 'express-validator/filter';
 
@@ -39,13 +40,25 @@ UserInChatRouter.delete('/:userId', wrapAsync(async (req: Request, res: Response
 
 // create new UserInChat, User einem Chat hinzufügen
 UserInChatRouter.post('/', UserRules.create, wrapAsync(async (req: Request, res: Response) => {
+    
+    
+    /*
+    console.log("1");
+    const chat: Chat|null = await Chat.findByPk(req.params.chatId);
+    console.log("2");
+    // @ts-ignore
+    chat.addUsers([req.params.user]);
+    console.log("3");
+    res.status(200).json(req.params.user);
+    */
 
-    const queryData = matchedData(req);
+    
+   const queryData = matchedData(req);
 
-    const userInChat = new UserInChat(queryData);
-    await userInChat.save();
+   const userInChat = new UserInChat({userId: req.params.userId, chatId: req.params.chatId});
+   await userInChat.save();
 
-    res.status(200).json(userInChat);
+   res.status(200).json(userInChat);
 }));
 
 UserInChatRouter.use(globalErrorHandler);

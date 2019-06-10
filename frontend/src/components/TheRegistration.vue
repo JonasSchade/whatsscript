@@ -19,6 +19,7 @@
                       name="login"
                       label="Login"
                       type="text"
+                      autofocus
                     ></v-text-field>
                     <v-text-field
                       v-model="loginUserPw"

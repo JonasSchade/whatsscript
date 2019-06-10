@@ -35,7 +35,7 @@
                 </template>
                  <v-divider/>
               </v-list>
-              <div v-if="this.userToAddVisible">
+              <div class="user-to-add-wrapper" v-if="this.userToAddVisible">
                 <p class="subheading">Teilnehmer hinzufügen:</p>
                 <v-list class="user-to-add-list" two-line>
                   <template v-for="(user, index) in usersNotInChat">
@@ -53,7 +53,7 @@
                         <v-list-tile-title v-html="user.username"></v-list-tile-title>
                         <v-list-tile-sub-title v-html="user.status"></v-list-tile-sub-title>
                       </v-list-tile-content>
-                      <v-btn flat fab @click="deleteUserFromChat(user.id)">
+                      <v-btn flat fab @click="addUserToChat(user)">
                         <v-icon>add</v-icon>
                       </v-btn>
                     </v-list-tile>
@@ -84,14 +84,12 @@ import MessageComponent from '@/components/Message.vue';
 import moment from 'moment';
 import io from 'socket.io-client';
 import { ChatService } from '../services/chat.service';
+import { UserInChatService } from '../services/userInChat.service';
 
 @Component({
   components: { MessageComponent }
 })
 export default class ChatSettings extends Vue {
-  private messageToSend: string = '';
-  private message: string = '';
-  private socket = io('localhost:3000');
   private publicPath: string = process.env.BASE_URL || '/';
   private status: string = 'Kein Status';
   private user?: User;
@@ -118,11 +116,6 @@ export default class ChatSettings extends Vue {
     }
   }
 
-  private addUserToChat(user: User) {
-    if (!this.user) return;
-    UserService.addUser(this.user);
-  }
-
   private getUsername(userId: number): string {
     const userWithId = this.usersInChat.find(user => user.id === userId);
     if (userWithId !== undefined) {
@@ -138,24 +131,42 @@ export default class ChatSettings extends Vue {
       }
   }
 
-  @Watch('chat')
+  @Watch('usersInChat')
   private async setUsersNotInChat() {
       if (this.chat.id !== undefined) {
-        const allUsers = await UserService.getAllUsers();
-        this.usersNotInChat = allUsers.filter(u => !this.usersInChat.includes(u));
+        let allUsers = await UserService.getAllUsers();
+        this.usersInChat.forEach(userInChat => {
+          allUsers.forEach(user => {
+            if (user.id === userInChat.id) {
+              allUsers = allUsers.filter(u => u.id !== user.id);
+            }
+          });
+        });
+        this.usersNotInChat = allUsers;
       }
   }
 
   private async deleteUserFromChat(userId: number) {
-    if (this.usersInChat.length < 1) {
+    if (this.usersInChat.length > 1) {
       await ChatService.deleteUserFromChat(userId);
       this.usersInChat = this.usersInChat.filter(u => u.id !== userId);
+    }
+  }
+
+  private async addUserToChat(user: User) {
+    if (user.id && this.chat.id) {
+      // await ChatService.addUserToChat(user, this.chat.id);
+      await UserInChatService.addUserToChat(user.id, this.chat.id);
     }
   }
 }
 </script>
 
 <style lang="scss">
+
+.user-to-add-wrapper {
+  margin-top: 30px;
+}
 
 .--center-content {
   display: flex;
@@ -171,7 +182,7 @@ export default class ChatSettings extends Vue {
 }
 
 .chatname-wrapper {
-  background-color: 'red';
+  background-color: red;
 }
 
 </style>
