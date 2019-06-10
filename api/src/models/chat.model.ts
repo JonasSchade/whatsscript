@@ -10,7 +10,7 @@ import { BelongsToMany, HasMany, Table, Column, Model, DataType, DefaultScope } 
 export class Chat extends Model<Chat> {
 
     @Column(DataType.TEXT)
-    public chatName: string;
+    public chatname: string;
 
     @Column(DataType.BLOB)
     public picture: string;

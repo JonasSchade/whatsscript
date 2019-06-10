@@ -82,10 +82,10 @@ app.post('/setup', wrapAsync(async (req: Request, res: Response) => {
     u2 = await u2.save();
 
     // generate chat
-    let c1 = new Chat({ chatName: ''});
+    let c1 = new Chat({ chatname: 'Chat1'});
     c1 = await c1.save();
     
-    let c2 = new Chat({ chatName: 'TestChat'});
+    let c2 = new Chat({ chatname: 'TestChat'});
     c2 = await c2.save();
     
     // @ts-ignore

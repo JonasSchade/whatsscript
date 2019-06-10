@@ -95,8 +95,8 @@ export class ChatService {
             method: 'POST',
             uri: 'http://localhost:3000/userInChat/',
             body: {
-                user: userId,
-                chatId: chatId
+                userId,
+                chatId
             },
             json: true // Automatically stringifies the body to JSON
         };

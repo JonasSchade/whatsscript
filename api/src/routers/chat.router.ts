@@ -17,7 +17,7 @@ ChatRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
 
     if (chat === null) throw { status: 404, responseMessage: `chat with id ${req.body.id} not found`};
 
-    const chatname = chat.chatName;
+    const chatname = chat.chatname;
     const picture = chat.picture;
 
     res.status(200).json(chat);

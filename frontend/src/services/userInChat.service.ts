@@ -4,13 +4,13 @@ import { Chat } from '../models/chat';
 
 export class UserInChatService {
 
-    public static addUserToChat(userId: number, chatId: number): void {
+    public static addUserToChat(user: User, chatId: number): void {
         const options = {
             method: 'POST',
             uri: 'http://localhost:3000/userInChat/',
             body: {
-                userId: userId,
-                chatId: chatId
+                user,
+                chatId
             },
             json: true // Automatically stringifies the body to JSON
         };

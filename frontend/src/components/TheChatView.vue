@@ -4,47 +4,26 @@
         wrap
         style="height: 200px;"
     >    
-    <v-toolbar flat class="transparent">
-        <v-list>
-            <v-list-tile avatar tag="div">
-              <v-avatar
-                :tile="tile"
-                :size="avatarSize"
-                color="grey lighten-4"
-              >
-                <img src="https://vuetifyjs.com/apple-touch-icon-180x180.png" alt="avatar">
-              </v-avatar>
-
-             <v-list-tile-content class="username">
-                <v-list-tile-title> {{ (loggedInUser || { username: ''}).username }} </v-list-tile-title>
-              </v-list-tile-content>
-
-          </v-list-tile>
-
-          <v-text-field class ="search"
-            v-model="search"
-            append-icon="search"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-list>  
+    <v-toolbar flat class="transparent">         
+      <v-avatar :size=40>
+        <img src="https://vuetifyjs.com/apple-touch-icon-180x180.png" alt="avatar">
+      </v-avatar>
+      <div class="username">
+        <span> {{ (loggedInUser || { username: ''}).username }} </span>
+      </div>
     </v-toolbar>    
-    
+
     <v-divider></v-divider>
    
     <v-list two-line>
-      <template v-for="(chat, index) in allChats">
+      <template v-for="(chat, index) in allChats">      
         <v-divider v-if="index!=0" :key="index"></v-divider>
-        
-        <v-list-tile :key="chat.chatname">
-          <v-tile-avatar
-            :tile="tile"
-            :size="avatarSize"
-            color="grey lighten-4"
-          >
-            <img src="https://vuetifyjs.com/apple-touch-icon-180x180.png" alt="avatar">
-          </v-tile-avatar>
+        <v-list-tile :key="chat.username" avatar>
+          <v-list-tile-avatar>
+            <img
+            src="https://vuetifyjs.com/apple-touch-icon-180x180.png"
+            alt="avatar">
+          </v-list-tile-avatar>
 
           <v-list-tile-content>
             <v-list-tile-title v-html="chat.chatname"></v-list-tile-title>
@@ -89,35 +68,29 @@ import ChatSettings from './TheChatSettings.vue';
 export default class TheChatView extends Vue {
   private allChats: Chat[] = [];
   private user?: User = {id: undefined, username: '', email: '', password: '', picture: '', status: '', chats: []};
-  private chatname?: string;  
-
-@Prop()
-private chat: Chat = {id: 0, chatname: 'Kein Name', picture: '', users: []};
 
 private mounted() {
   this.user = this.$store.state.loggedInUser;
   this.setAllChats();
-  console.log(this.allChats);
 }
 
-private async getAllChatsForUser(userId: number){
-  try{
+private async getAllChatsForUser(userId: number) {
+  try {
   const chatsToReturn = await UserService.getAllChatsForUser(1);
   return chatsToReturn;
-  }catch(err){
+  } catch (err) {
     console.error('Error: ', err.message);
     throw err;
   }
 }
 
-@Watch('chat')
 private async setAllChats() {
     this.allChats = await ChatService.getAllChats();
 }
 
-private getChatName(chatId: number): string{
+private getChatName(chatId: number): string {
   const chatWithId = this.allChats.find(chat => chat.id === chatId);
-  if(chatWithId !== undefined){
+  if (chatWithId !== undefined) {
     return chatWithId.chatname;
   }
   return 'test';

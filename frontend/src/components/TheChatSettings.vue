@@ -1,15 +1,16 @@
 <template>
   <div class="container">
         <v-img :aspect-ratio="16/9" src="https://cdn.vuetifyjs.com/images/parallax/material.jpg">
-        </v-img>
           <div class="chatname-wrapper">
             <v-text-field
             single-line
             label="Chatname" 
             append-icon="edit"
-            :value="chat.chatname">
+            :value="chat.chatname"
+            class="__textfield">
             </v-text-field>
           </div>
+        </v-img>
             <div>
               <p class="subheading">Teilnehmer:</p>
               <v-list two-line>
@@ -106,24 +107,6 @@ export default class ChatSettings extends Vue {
     this.setUsersNotInChat();
   }
 
-  private async getUser(userId: number): Promise<User> {
-    try {
-      const userToReturn = await UserService.getUser(1);
-      return userToReturn;
-    } catch (err) {
-      console.error('Error: ', err.message);
-      throw err;
-    }
-  }
-
-  private getUsername(userId: number): string {
-    const userWithId = this.usersInChat.find(user => user.id === userId);
-    if (userWithId !== undefined) {
-      return userWithId.username;
-    }
-    return '';
-  }
-
   @Watch('chat')
   private async setUsersInChat() {
       if (this.chat.id !== undefined) {
@@ -154,11 +137,12 @@ export default class ChatSettings extends Vue {
   }
 
   private async addUserToChat(user: User) {
-    if (user.id && this.chat.id) {
-      // await ChatService.addUserToChat(user, this.chat.id);
-      await UserInChatService.addUserToChat(user.id, this.chat.id);
+    if (user.id !== undefined && this.chat.id !== undefined) {
+      await UserInChatService.addUserToChat(user, this.chat.id);
+      this.usersInChat.push(user);
     }
   }
+
 }
 </script>
 
@@ -182,7 +166,13 @@ export default class ChatSettings extends Vue {
 }
 
 .chatname-wrapper {
-  background-color: red;
+  position: absolute;
+  background-color: rgba(0,0,0,0.5);
+  opacity: 0.5;
+  bottom: 0px;
+  .__textfield{
+    width: 100%;
+  }
 }
 
 </style>

@@ -36,7 +36,7 @@
       <chat-settings-component :chat="chat"></chat-settings-component>
     </v-navigation-drawer>
     
-  <!--<v-navigation-drawer
+  <v-navigation-drawer
       class="chat-view"
       v-model="$store.state.leftDrawerActive"
       absolute
@@ -44,8 +44,8 @@
       temporary
       width="400"
     >
-      <chat-view-component :chat="chat"></chat-view-component>
-  </v-navigation-drawer>-->
+      <chat-view-component></chat-view-component>
+  </v-navigation-drawer>
   
   </div>
 
