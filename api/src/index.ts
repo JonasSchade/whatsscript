@@ -84,9 +84,15 @@ app.post('/setup', wrapAsync(async (req: Request, res: Response) => {
     // generate chat
     let c1 = new Chat({ chatName: ''});
     c1 = await c1.save();
-
+    
+    let c2 = new Chat({ chatName: 'TestChat'});
+    c2 = await c2.save();
+    
     // @ts-ignore
     c1.addUsers([u1, u2]);
+
+    // @ts-ignore
+    c2.addUsers([u1, u2]);
 
     res.status(200).end();
 
