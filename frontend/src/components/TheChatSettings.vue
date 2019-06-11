@@ -1,76 +1,111 @@
 <template>
   <div class="container">
-        <v-img :aspect-ratio="16/9" src="https://cdn.vuetifyjs.com/images/parallax/material.jpg">
-          <div class="chatname-wrapper">
-            <v-text-field
-            single-line
-            label="Chatname" 
-            append-icon="edit"
-            :value="chat.chatname"
-            class="__textfield">
-            </v-text-field>
-          </div>
-        </v-img>
-            <div>
-              <p class="subheading">Teilnehmer:</p>
-              <v-list two-line>
-                <template v-for="(user, index) in usersInChat">
-                  <v-divider v-if="index!=0"  :key="index"></v-divider>
+    <div v-if="editImage==true">
+      <picture-input
+        ref="pictureInput"
+        @change="onChanged"
+        @remove="onRemoved"
+        :width="400"
+        :removable="false"
+        :height="400"
+        accept="image/jpeg, image/png, image/gif"
+        buttonClass="ui button primary"
+        hideChangeButton
+        crop: true
+        :customStrings="{
+        upload: '<h1>Upload!</h1>',
+        drag: 'Klicke oder ziehe ein Foto hier her!'}">
+      </picture-input>
+      <div class="--center-content">
+        <v-btn round class="add-btn" color="primary" @click="attemptUpload" v-bind:class="{ disabled: image=='' }">
+          <v-icon class="__icon">check</v-icon>Upload
+        </v-btn>
+        <v-btn dark round class="add-btn" color="red" @click="editImage = false">
+          <v-icon color="white" class="__icon">cancel</v-icon>Abbrechen
+        </v-btn>
+      </div>
+    </div>
+    <div v-if="editImage==false">
+      <v-img class="image" :aspect-ratio="16/9" v-bind:src="chat.picture">
+        <v-btn class="__add-image-btn" flat fab @click="editImage = true">
+            <v-icon color="black">photo</v-icon>
+        </v-btn>
+        <div class="chatname-wrapper">
+          <v-text-field
+          single-line
+          label="Chatname" 
+          :value="chat.chatname"
+          placeholder="Gib dem Chat einen Namen!"
+          dark
+          class="__textfield"
+          @click="showSaveIcon = true">
+          </v-text-field>
+          <v-btn flat fab @click="saveNewChatname" v-if="showSaveIcon">
+            <v-icon color= "white">check</v-icon>
+          </v-btn>
+        </div>
+      </v-img>
+    </div>
+      <div class="user-wrapper">
+        <p class="subheading">Teilnehmer:</p>
+        <v-list two-line>
+          <template v-for="(user, index) in usersInChat">
+            <v-divider v-if="index!=0"  :key="index"></v-divider>
 
-                  <v-list-tile :key="user.username" avatar>
-                    <v-list-tile-avatar>
-                      <img
-                        :src="user.picture"
-                        @error="user.picture=`${publicPath}images/user_icon.svg`"
-                      >
-                    </v-list-tile-avatar>
+            <v-list-tile :key="user.username" avatar>
+              <v-list-tile-avatar>
+                <img
+                  :src="user.picture"
+                  @error="user.picture=`${publicPath}images/user_icon.svg`"
+                >
+              </v-list-tile-avatar>
 
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="user.username"></v-list-tile-title>
-                      <v-list-tile-sub-title v-html="user.status"></v-list-tile-sub-title>
-                    </v-list-tile-content>
-                    <v-btn flat fab @click="deleteUserFromChat(user.id)">
-                      <v-icon>cancel</v-icon>
-                    </v-btn>
-                  </v-list-tile>
-                </template>
-                 <v-divider/>
-              </v-list>
-              <div class="user-to-add-wrapper" v-if="this.userToAddVisible">
-                <p class="subheading">Teilnehmer hinzufügen:</p>
-                <v-list class="user-to-add-list" two-line>
-                  <template v-for="(user, index) in usersNotInChat">
-                    <v-divider v-if="index!=0"  :key="index"></v-divider>
+              <v-list-tile-content>
+                <v-list-tile-title v-html="user.username"></v-list-tile-title>
+                <v-list-tile-sub-title v-html="user.status"></v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-btn flat fab @click="deleteUserFromChat(user.id)">
+                <v-icon>cancel</v-icon>
+              </v-btn>
+            </v-list-tile>
+          </template>
+            <v-divider/>
+        </v-list>
+        <div class="user-to-add-wrapper" v-if="this.userToAddVisible">
+          <p class="subheading">Teilnehmer hinzufügen:</p>
+          <v-list class="user-to-add-list" two-line>
+            <template v-for="(user, index) in usersNotInChat">
+              <v-divider v-if="index!=0"  :key="index"></v-divider>
 
-                    <v-list-tile :key="user.username" avatar>
-                      <v-list-tile-avatar>
-                        <img
-                          :src="user.picture"
-                          @error="user.picture=`${publicPath}images/user_icon.svg`"
-                        >
-                      </v-list-tile-avatar>
+              <v-list-tile :key="user.username" avatar>
+                <v-list-tile-avatar>
+                  <img
+                    :src="user.picture"
+                    @error="user.picture=`${publicPath}images/user_icon.svg`"
+                  >
+                </v-list-tile-avatar>
 
-                      <v-list-tile-content>
-                        <v-list-tile-title v-html="user.username"></v-list-tile-title>
-                        <v-list-tile-sub-title v-html="user.status"></v-list-tile-sub-title>
-                      </v-list-tile-content>
-                      <v-btn flat fab @click="addUserToChat(user)">
-                        <v-icon>add</v-icon>
-                      </v-btn>
-                    </v-list-tile>
-                  </template>
-                  <v-divider/>
-                </v-list>
-              </div>
-              <div class="--center-content">
-              <v-btn round class="add-btn" color="primary" @click="userToAddVisible=true" v-if="!userToAddVisible">
-                  <v-icon class="__icon">add</v-icon>Neuer Teilnehmer
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="user.username"></v-list-tile-title>
+                  <v-list-tile-sub-title v-html="user.status"></v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-btn flat fab @click="addUserToChat(user)">
+                  <v-icon>add</v-icon>
                 </v-btn>
-                <v-btn round class="add-btn" color="primary" @click="userToAddVisible=false" v-if="userToAddVisible">
-                  Abbrechen
-                </v-btn>
-              </div>
-            </div>
+              </v-list-tile>
+            </template>
+            <v-divider/>
+          </v-list>
+        </div>
+        <div class="--center-content">
+        <v-btn round class="add-btn" color="primary" @click="userToAddVisible=true" v-if="!userToAddVisible">
+            <v-icon class="__icon">add</v-icon>Neuer Teilnehmer
+          </v-btn>
+          <v-btn round class="add-btn" color="primary" @click="userToAddVisible=false" v-if="userToAddVisible">
+            Abbrechen
+          </v-btn>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -86,9 +121,10 @@ import moment from 'moment';
 import io from 'socket.io-client';
 import { ChatService } from '../services/chat.service';
 import { UserInChatService } from '../services/userInChat.service';
+import PictureInput from 'vue-picture-input';
 
 @Component({
-  components: { MessageComponent }
+  components: { MessageComponent, PictureInput }
 })
 export default class ChatSettings extends Vue {
   private publicPath: string = process.env.BASE_URL || '/';
@@ -97,9 +133,12 @@ export default class ChatSettings extends Vue {
   private usersInChat: User[] = [];
   private usersNotInChat: User[] = [];
   private userToAddVisible: boolean = false;
+  private image: string = '';
+  private editImage: boolean = false;
+  private showSaveIcon: boolean = false;
 
   @Prop()
-  private chat: Chat = {id: undefined, chatname: 'Kein Name', picture: '', users: []};
+  private chat: Chat = {id: undefined, chatname: '', picture: '', users: []};
 
   private mounted() {
     this.user = this.$store.state.loggedInUser;
@@ -143,14 +182,57 @@ export default class ChatSettings extends Vue {
     }
   }
 
+  private onChanged(image: string) {
+    if (image) {
+      this.image = image;
+    } else {
+      console.log('Your browser is too old. No support for Filereader API');
+    }
+  }
+
+  private onRemoved() {
+    this.image = '';
+  }
+
+  private async attemptUpload() {
+    if (this.image && this.chat.id !== undefined) {
+      const updatedChat: Chat = this.chat;
+      updatedChat.picture = this.image;
+      await ChatService.updateChat(this.chat.id, updatedChat);
+      this.editImage = false;
+    }
+  }
+
+  private async saveNewChatname() {
+    if (this.chat.id !== undefined) {
+      await ChatService.updateChat(this.chat.id, this.chat);
+      this.showSaveIcon = false;
+    }
+  }
+
 }
 </script>
 
 <style lang="scss">
 
-.user-to-add-wrapper {
-  margin-top: 30px;
+.image {
+  background-color: rgba(200,200,200,.25);
+  position: relative;
+  .__add-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
 }
+
+.user-wrapper {
+  margin-top: 40px;
+
+  .user-to-add-wrapper {
+  margin-top: 30px;
+  }
+}
+
 
 .--center-content {
   display: flex;
@@ -168,10 +250,11 @@ export default class ChatSettings extends Vue {
 .chatname-wrapper {
   position: absolute;
   background-color: rgba(0,0,0,0.5);
-  opacity: 0.5;
   bottom: 0px;
+  display: inline-flex;
+  width: 100%;
   .__textfield{
-    width: 100%;
+    margin: 0px 0px 0px 10px;
   }
 }
 

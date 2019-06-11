@@ -48,8 +48,10 @@ ChatRouter.put('/:id', wrapAsync(async (req: Request, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id);
 
     if (chat === null) throw { status: 404, responseMessage: `chat with id ${req.body.id} not found`};
-
-    chat.update({});
+    chat.update({
+        chatname: req.body.chatname,
+        picture: req.body.picture
+    });
     res.status(200).end();
 }));
 
