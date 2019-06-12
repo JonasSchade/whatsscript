@@ -103,7 +103,7 @@ export default class TheChat extends Vue {
     chats: [1, 2]
   };
 
-  private chat: Chat = {chatname: 'kein Name', picture: '', users: []};
+  private chat: Chat = {chatname: '', picture: '', users: []};
   public messages: Message[] = new Array();
   public usersInChat: User[] = new Array();
 

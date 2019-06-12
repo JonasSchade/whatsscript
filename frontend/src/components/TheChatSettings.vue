@@ -26,7 +26,7 @@
       </div>
     </div>
     <div v-if="editImage==false">
-      <v-img class="image" :aspect-ratio="16/9" v-bind:src="chat.picture">
+      <v-img class="image" :aspect-ratio="16/9" :src="chat.picture" :lazy-src="`${publicPath}images/no_image.jpg`">
         <v-btn class="__add-image-btn" flat fab @click="editImage = true">
             <v-icon color="black">photo</v-icon>
         </v-btn>
@@ -34,13 +34,13 @@
           <v-text-field
           single-line
           label="Chatname" 
-          :value="chat.chatname"
+          v-model="chat.chatname"
           placeholder="Gib dem Chat einen Namen!"
           dark
           class="__textfield"
           @click="showSaveIcon = true">
           </v-text-field>
-          <v-btn flat fab @click="saveNewChatname" v-if="showSaveIcon">
+          <v-btn flat fab @click="saveNewChatname()" v-if="showSaveIcon">
             <v-icon color= "white">check</v-icon>
           </v-btn>
         </div>
