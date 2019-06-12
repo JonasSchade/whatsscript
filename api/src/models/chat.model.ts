@@ -12,7 +12,7 @@ export class Chat extends Model<Chat> {
     @Column(DataType.TEXT)
     public chatname: string;
 
-    @Column(DataType.BLOB)
+    @Column(DataType.TEXT)
     public picture: string;
 
     @BelongsToMany(() => User, () => UserInChat)

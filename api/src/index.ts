@@ -30,6 +30,8 @@ const app = express();
 const bp = bodyParser.json();
 app.use(bp);
 
+app.use(bodyParser({limit: '50mb'}));
+
 // make port settable via environment variable
 // default port = 3000
 const {

@@ -31,7 +31,7 @@ export class User extends Model<User> {
     @Column(DataType.TEXT)
     public password: string;
 
-    @Column(DataType.BLOB)
+    @Column(DataType.TEXT)
     public picture: string;
 
     @Column(DataType.TEXT)
