@@ -59,7 +59,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import { UserService } from '../services/user.service';
 import { User } from '../models/user';
 import App from '../App.vue';
-import passwordHash from 'password-hash';
+import bcrypt from 'bcryptjs';
 
 @Component
 export default class Login extends Vue {
@@ -76,7 +76,7 @@ export default class Login extends Vue {
       const newUser: User = {
         username: this.loginUserInput,
         email: this.loginUserEmail,
-        password: this.encrypt(this.loginUserPw),
+        password: await this.encrypt(this.loginUserPw),
         picture: '',
         status: '',
         chats: []
@@ -94,8 +94,8 @@ export default class Login extends Vue {
     return userToReturn;
   }
 
-  private encrypt(plainPassword: string): string {
-    return passwordHash.generate(plainPassword);
+  private async encrypt(plainPassword: string): Promise<string> {
+    return await  bcrypt.hashSync(plainPassword, 100);
   }
 }
 </script>

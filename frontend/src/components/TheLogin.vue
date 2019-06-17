@@ -52,24 +52,34 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { UserService } from '../services/user.service';
+import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
 import App from '../App.vue';
-import passwordHash from 'password-hash';
+import bcrypt from 'bcryptjs';
 
 @Component
 export default class Login extends Vue {
   private loginUserInput: string = '';
   private loginUserPw: string = '';
   private error: string = '';
-  private  rounds: number = 1000;
+  private salt: string = '$2a$10$WsO3Fc2FYMaS6QmGeWhpfu';
 
-  private async loginUser() {
-    const userToLogin: User[] = await UserService.getUsersByUsername(this.loginUserInput);
+private async loginUser() {
+    const user: User|null = await LoginService.loginUser(this.loginUserInput, await bcrypt.hashSync(this.loginUserPw, this.salt));
+
+    if (user === null) {
+      this.error = 'Username oder Passwort stimmt nicht';
+      return;
+    }
+
+    this.$store.commit('changeUser', user);
+    this.$router.push('/chat');
+
+    /*
     const userExists: boolean = userToLogin.length > 0;
     if (userExists) {
       if (this.verifyPassword(this.loginUserPw, userToLogin[0].password)) {
-        this.$store.commit('changeUser', userToLogin[0]);
-        this.$router.push('/chat');
+        
         console.log(userToLogin[0].username + 'ist eingeloggt');
       } else {
         this.error = 'Passwort ist falsch.';
@@ -77,10 +87,7 @@ export default class Login extends Vue {
     } else {
       this.error = 'Dieser User existiert nicht.';
     }
-  }
-
-  private verifyPassword(plainPassword: string, hashedPassword: string): boolean {
-    return passwordHash.verify(plainPassword, hashedPassword);
+    */
   }
 }
 </script> 

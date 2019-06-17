@@ -71,7 +71,6 @@ import ChatSettings from './TheChatSettings.vue';
 // @ts-ignore
 import PictureInput from 'vue-picture-input';
 import { Message } from '../models/message';
-import { error } from 'util';
 
 @Component({
   components: {
