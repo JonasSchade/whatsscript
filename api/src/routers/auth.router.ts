@@ -30,7 +30,7 @@ AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: R
     res.cookie('whatsscript', token, { domain: '127.0.0.1', httpOnly: true, secure: false});
 
     // Cookie schicken
-    res.status(200).json({ token });
+    res.status(200).json({ token, user });
 
 }));
 
