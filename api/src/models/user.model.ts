@@ -17,6 +17,11 @@ import {
 } from 'sequelize-typescript';
 
 
+@DefaultScope({
+    attributes: {
+        exclude: ['password']
+    }
+})
 @Table
 export class User extends Model<User> {
 

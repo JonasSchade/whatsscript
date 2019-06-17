@@ -1,4 +1,8 @@
 import { validationResult } from 'express-validator/check';
+import { validate, decode } from './jwt.utils';
+import { Request, Response, NextFunction } from 'express';
+import { User } from '../models/user.model';
+
 
 export function wrapAsync(fn) {
     return (req, res, next) => {
@@ -18,6 +22,24 @@ export function return422(req, res, next) {
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
     }
+
+    next();
+}
+
+export interface WhatsScriptRequest extends Request {
+    whatsScriptUser: User;
+}
+
+export function checkAuth(req: WhatsScriptRequest, res: Response, next: NextFunction) {
+
+    const token = req.cookies.whatsscript;
+    if (!token) {
+        return res.status(401).end();
+    } else if (!validate(token)) {
+        return res.status(403).end();
+    }
+
+    req.whatsScriptUser = decode(token) as User;
 
     next();
 }
