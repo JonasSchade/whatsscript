@@ -1,24 +1,29 @@
 import { Router, Request, Response } from 'express';
 import { Chat } from '../models/chat.model';
 import { User } from '../models/user.model';
-import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
+import { wrapAsync, globalErrorHandler, checkAuth, WhatsScriptRequest } from '../utils/express.utils';
 
 export const ChatRouter = Router();
 
-// suche alle chats
-ChatRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
-    const chats: Chat[] = await Chat.findAll();
+// suche alle chats eines Users
+ChatRouter.get('/', [checkAuth], wrapAsync(async (req: WhatsScriptRequest, res: Response) => {
+    const userId = req.whatsScriptUser.id;
 
-    res.status(200).json(chats);
+    const user = await User.findByPk(userId, { include: [ { model: Chat } ] });
+
+    res.status(200).json(user.chats);
 }));
 // suche bestimmten chat
-ChatRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
-    const chat: Chat|null = await Chat.findByPk(req.params.id);
+ChatRouter.get('/:id',[checkAuth], wrapAsync(async (req: WhatsScriptRequest, res: Response) => {
+    const chat: Chat|null = await Chat.findByPk(req.params.id, { include: [ { model: User } ] });
 
     if (chat === null) throw { status: 404, responseMessage: `chat with id ${req.body.id} not found`};
 
-    const chatname = chat.chatname;
-    const picture = chat.picture;
+    const userId = req.whatsScriptUser.id;
+
+    const user = chat.users.find(user => user.id === userId);
+
+    if (!user) throw { status: 403, responseMessage: 'Finger weg' };
 
     res.status(200).json(chat);
 }));

@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as socketIo from 'socket.io';
+import * as cookieParser from 'cookie-parser';
 
 import { Request, Response } from 'express';
 import { Sequelize } from 'sequelize-typescript';
@@ -15,6 +16,7 @@ import { ChatRouter } from './routers/chat.router';
 import { MessageRouter } from './routers/message.router';
 import { wrapAsync } from './utils/express.utils';
 import { UserInChatRouter } from './routers/userInChat.router';
+import { AuthRouter } from './routers/auth.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
@@ -31,6 +33,7 @@ const bp = bodyParser.json();
 app.use(bp);
 
 app.use(bodyParser({limit: '50mb'}));
+app.use(cookieParser());
 
 // make port settable via environment variable
 // default port = 3000
@@ -55,6 +58,7 @@ app.use('/user', UserRouter);
 app.use('/chat', ChatRouter);
 app.use('/message', MessageRouter);
 app.use('/userInChat', UserInChatRouter);
+app.use('/', AuthRouter);
 
 app.post('/setup', wrapAsync(async (req: Request, res: Response) => {
 
