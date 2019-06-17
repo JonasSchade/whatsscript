@@ -44,7 +44,7 @@
       temporary
       width="400"
     >
-      <chat-view-component></chat-view-component>
+      <chat-view-component :messages="messages"></chat-view-component>
   </v-navigation-drawer>
   
   </div>
@@ -103,7 +103,7 @@ export default class TheChat extends Vue {
     chats: [1, 2]
   };
 
-  private chat: Chat = {chatname: '', picture: '', users: []};
+  private chat: Chat = {chatname: '', picture: '', users: [], messages: []};
   public messages: Message[] = new Array();
   public usersInChat: User[] = new Array();
 

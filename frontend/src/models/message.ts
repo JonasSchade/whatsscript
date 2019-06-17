@@ -7,5 +7,6 @@ export interface Message {
     read: boolean;
     chatId: number;
     userId: number;
+    user: User;
 
 }

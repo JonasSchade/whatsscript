@@ -26,19 +26,20 @@
       </div>
     </div>
     <div v-if="editImage==false">
-      <v-img class="image" :aspect-ratio="16/9" :src="chat.picture" :lazy-src="`${publicPath}images/no_image.jpg`">
+      
+      <v-img class="image" :aspect-ratio="16/9" :src="(chat.picture || '')" :lazy-src="`${publicPath}images/no_image.jpg`">
         <v-btn class="__add-image-btn" flat fab @click="editImage = true">
             <v-icon color="black">photo</v-icon>
         </v-btn>
         <div class="chatname-wrapper">
           <v-text-field
-          single-line
-          label="Chatname" 
-          v-model="chat.chatname"
-          placeholder="Gib dem Chat einen Namen!"
-          dark
-          class="__textfield"
-          @click="showSaveIcon = true">
+            single-line
+            label="Chatname" 
+            v-model="chat.chatname"
+            placeholder="Gib dem Chat einen Namen!"
+            dark
+            class="__textfield"
+            @click="showSaveIcon = true">
           </v-text-field>
           <v-btn flat fab @click="saveNewChatname()" v-if="showSaveIcon">
             <v-icon color= "white">check</v-icon>
@@ -121,6 +122,7 @@ import moment from 'moment';
 import io from 'socket.io-client';
 import { ChatService } from '../services/chat.service';
 import { UserInChatService } from '../services/userInChat.service';
+// @ts-ignore
 import PictureInput from 'vue-picture-input';
 
 @Component({
@@ -136,9 +138,10 @@ export default class ChatSettings extends Vue {
   private image: string = '';
   private editImage: boolean = false;
   private showSaveIcon: boolean = false;
+  private chatname: string = '';
 
   @Prop()
-  private chat: Chat = {id: undefined, chatname: '', picture: '', users: []};
+  private chat: Chat = {id: undefined, chatname: '', picture: '', users: [], messages: []};
 
   private mounted() {
     this.user = this.$store.state.loggedInUser;

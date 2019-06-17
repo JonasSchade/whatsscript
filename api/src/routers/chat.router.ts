@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { Chat } from '../models/chat.model';
 import { User } from '../models/user.model';
 import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
+import { Message } from '../models/message.model';
 
 export const ChatRouter = Router();
 
@@ -11,6 +12,7 @@ ChatRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
 
     res.status(200).json(chats);
 }));
+
 // suche bestimmten chat
 ChatRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id);
