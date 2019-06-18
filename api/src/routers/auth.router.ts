@@ -27,10 +27,10 @@ AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: R
     const token = sign(user.get());
 
     // Cookie mit token erstellen
-    res.cookie('whatsscript', token, { domain: '127.0.0.1', httpOnly: true, secure: false});
+    res.cookie('whatsscript', token, { domain: 'localhost', httpOnly: true, secure: false});
 
     // Cookie schicken
-    res.status(200).json({ token });
+    res.status(200).json({ token, user });
 
 }));
 
@@ -47,7 +47,7 @@ AuthRouter.post('/register', UserRules.create, wrapAsync(async (req: Request, re
     // steck User in Token
     const token = sign(user.get());
     // schick Token ab
-    res.cookie('whatsscript', token, { domain: '127.0.0.1', httpOnly: true, secure: false});
+    res.cookie('whatsscript', token, { domain: 'localhost', httpOnly: true, secure: false});
     res.status(200).json({ token });
 }));
 

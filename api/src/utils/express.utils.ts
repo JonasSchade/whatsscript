@@ -33,13 +33,16 @@ export interface WhatsScriptRequest extends Request {
 export function checkAuth(req: WhatsScriptRequest, res: Response, next: NextFunction) {
 
     const token = req.cookies.whatsscript;
-    if (!token) {
+    const authHeader = req.header('Authorization');
+    if (!token && !authHeader) {
         return res.status(401).end();
-    } else if (!validate(token)) {
+    } else if (token && !validate(token)) {
+        return res.status(403).end();
+    } else if (authHeader && !validate(authHeader)) {
         return res.status(403).end();
     }
 
-    req.whatsScriptUser = decode(token) as User;
+    req.whatsScriptUser = decode(token || authHeader) as User;
 
     next();
 }

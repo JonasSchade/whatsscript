@@ -2,6 +2,7 @@ import * as rp from 'request-promise-native';
 
 import { Chat } from '../models/chat';
 import { User } from '../models/user';
+import store from '@/store';
 
 export class ChatService {
 
@@ -64,7 +65,7 @@ export class ChatService {
         let response: Chat[];
 
         try {
-            const body = await rp.get('http://localhost:3000/chat');
+            const body = await rp.get('http://localhost:3000/chat', { headers: { Authorization: store.state.token }});
             response = JSON.parse(body);
         } catch (err) {
             throw new Error('Error in getAllChats()');

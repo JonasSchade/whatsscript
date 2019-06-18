@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import { ChatService } from './services/chat.service';
+import store from './store';
 
 Vue.use(Router);
 
@@ -16,6 +18,10 @@ export default new Router({
     //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     // }
     {
+      path: '/',
+      redirect: '/chat'
+    },
+    {
       path: '/login',
       name: 'Login',
       component: () => import('./components/TheLogin.vue')
@@ -28,6 +34,25 @@ export default new Router({
     {
       path: '/chat',
       name: 'Chat',
+      component: () => import('./components/TheChat.vue'),
+      beforeEnter: async (to, from, next) => {
+
+        let chats;
+        try {
+        chats = await ChatService.getAllChats();
+
+        } catch (err) {
+          next('/login');
+          return;
+        }
+        
+        store.commit('setChats', chats);
+        next(`/chat/${chats[0].id}`);
+      }
+    },
+    {
+      path: '/chat/:chatId',
+      props: true,
       component: () => import('./components/TheChat.vue')
     },
     {

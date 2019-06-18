@@ -69,6 +69,8 @@ import { ChatService } from '../services/chat.service';
   components: { MessageComponent, ChatSettingsComponent, ChatViewComponent }
 })
 export default class TheChat extends Vue {
+  @Prop() private chatId?: number;
+
   private messageToSend: string = '';
   private message: string = '';
   private socket = io('localhost:3000');

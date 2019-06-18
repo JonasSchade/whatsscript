@@ -1,5 +1,6 @@
 import * as rp from 'request-promise-native';
 import { User } from '@/models/user';
+import store from '@/store';
 
 export class LoginService {
 
@@ -20,6 +21,7 @@ export class LoginService {
             return null;
         }
         
+        store.commit('setToken', response.token);
         
         return response.user;
     }
