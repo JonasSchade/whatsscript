@@ -72,14 +72,14 @@ app.post('/setup', wrapAsync(async (req: Request, res: Response) => {
     let u1 = new User({
         username: 'user1',
         email: 'user1@example.com',
-        password: 'sha1$ebad483c$1$1a287985ad7659de03eefabdf94d5a12790213d7',
+        password: '$2a$10$WsO3Fc2FYMaS6QmGeWhpfuk2kOU4cmFtI3/ngaa13sPqO7IfrkgjO',
         picture: '',
         status: 'Ich bin ein User'
     });
     let u2 = new User({
         username: 'user2',
         email: 'user2@example.com',
-        password: 'sha1$ebad483c$1$1a287985ad7659de03eefabdf94d5a12790213d7',
+        password: '$2a$10$WsO3Fc2FYMaS6QmGeWhpfuk2kOU4cmFtI3/ngaa13sPqO7IfrkgjO',
         picture: '',
         status: 'Ich bin der zweite User'
     });
