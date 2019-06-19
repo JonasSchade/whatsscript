@@ -11,7 +11,7 @@
         accept="image/jpeg, image/png, image/gif"
         buttonClass="ui button primary"
         hideChangeButton
-        crop: true
+        crop= "true"
         :customStrings="{
         upload: '<h1>Upload!</h1>',
         drag: 'Klicke oder ziehe ein Foto hier her!'}">

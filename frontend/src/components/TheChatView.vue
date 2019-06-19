@@ -77,9 +77,6 @@
                   <v-list-tile-title v-html="user.username"></v-list-tile-title>
                   <v-list-tile-sub-title v-html="user.status"></v-list-tile-sub-title>
                 </v-list-tile-content>
-                <v-btn flat fab @click="addUserToChat(user)"> 
-                  <v-icon>add</v-icon>
-                </v-btn>
               </v-list-tile>
             </template>
             <v-divider/>
@@ -134,8 +131,7 @@ export default class TheChatView extends Vue {
 
   private async addNewChat(userId: number){
     let newChat: Chat = {chatname: 'TEST', picture: '', users: [this.user.id!, userId], messages: []};
-    await ChatService.addChat(newChat); 
-    this.$store.commit('setChats', newChat);
+    newChat = await ChatService.addChat(newChat); 
     //this.goToChat(newChat.id);
   }
 
@@ -180,7 +176,7 @@ export default class TheChatView extends Vue {
 
   private async getAllChatsForUser(userId: number) {
     try {
-    const chatsToReturn = await UserService.getAllChatsForUser(1);
+    const chatsToReturn = await UserService.getAllChatsForUser(userId);
     return chatsToReturn;
     } catch (err) {
       console.error('Error: ', err.message);
@@ -200,7 +196,7 @@ export default class TheChatView extends Vue {
     this.$store.commit('setSelectedChat', chatId);
     this.$router.push('/chat/' + this.$store.state.selectedChat);
     
-    if(this.$store.state.selectedChat.id !== undefined ){
+    if(this.$store.state.selectedChat !== null ){
       this.messages = await MessageService.getMessagesInChat(this.$store.state.selectedChat);
       this.chat = await ChatService.getChat(this.$store.state.selectedChat);
     }

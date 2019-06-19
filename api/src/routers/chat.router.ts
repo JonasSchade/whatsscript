@@ -42,7 +42,7 @@ ChatRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
 }));
 
 // create chat
-ChatRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {   
+ChatRouter.post('/', wrapAsync(async (req: Request, res: Response) => {   
     const chat = new Chat ({
         chatname: req.body.chatname, 
         picture: req.body.picture, 

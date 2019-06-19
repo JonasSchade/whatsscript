@@ -136,7 +136,7 @@ export default class TheChat extends Vue {
 
   private async getMessages() {
     try {
-      this.messages = await MessageService.getMessagesInChat(1);
+      this.messages = await MessageService.getMessagesInChat(this.$store.state.selectedChat);
     } catch (err) {
       console.log('Error: ', err.message);
     }

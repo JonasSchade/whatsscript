@@ -10,7 +10,7 @@ export class ChatService {
         rp.delete('http://localhost:3000/chat/' + chatId);
     }
 
-    public static async addChat(chat: Chat) { //: Promise<Chat> {
+    public static async addChat(chat: Chat): Promise<Chat> {
         const options = {
             method: 'POST',
             uri: 'http://localhost:3000/chat',
@@ -24,14 +24,14 @@ export class ChatService {
         };
         let response: Chat;
         try {
-            // const body = await rp.post(options);
-            // response = JSON.parse(body);
-            rp.post(options);
+            const body = await rp.post(options);
+            response = JSON.parse(body);
+            // rp.post(options);
         } catch (err) {
             throw new Error('Error in addChat()');
         }
 
-        // return response;
+        return response;
     }
 
     public static async updateChat(chatId: number, chat: Chat) {
@@ -57,7 +57,7 @@ export class ChatService {
         let response: Chat;
 
         try {
-            const body = await rp.get('http://localhost:3000/chat/' + chatId);
+            const body = await rp.get('http://localhost:3000/chat/' + chatId, { headers: { Authorization: store.state.token }});
             response = JSON.parse(body);
         } catch (err) {
             throw new Error('Error in getChat()');
