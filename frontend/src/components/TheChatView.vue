@@ -41,7 +41,7 @@
     <v-list two-line class="list" v-if="showHeader">
       <template v-for="(chat, index) in allChats">      
         <v-divider v-if="index!=0" :key="index"></v-divider>
-        <v-list-tile :key="chat.chatname" avatar @click="goToChat()">
+        <v-list-tile :key="chat.chatname" avatar @click="goToChat(chat.id)">
           <v-list-tile-avatar>
             <img
             :src="(chat.picture || `${publicPath}images/no_image.jpg`)"
@@ -92,10 +92,12 @@ import { Chat } from '../models/chat';
 import { User } from '../models/user';
 import { ChatService } from '../services/chat.service';
 import { UserService } from '../services/user.service';
+import { MessageService } from '../services/message.service';
 import ChatSettings from './TheChatSettings.vue';
 // @ts-ignore
 import PictureInput from 'vue-picture-input';
 import { Message } from '../models/message';
+import { UserInChatService } from '../services/userInChat.service';
 
 @Component({
   components: {
@@ -109,7 +111,7 @@ import { Message } from '../models/message';
 export default class TheChatView extends Vue {
 
   @Prop() private messages?: Message[];
-
+ 
   private publicPath: string = process.env.BASE_URL || '/';
   private allChats: Chat[] = [];
   private user?: User = {id: undefined, username: '', email: '', password: '', picture: '', status: '', chats: []};
@@ -118,6 +120,8 @@ export default class TheChatView extends Vue {
   private showHeader: boolean = true;
   private availableUsers: User[] = [];
  
+  private chat?: Chat;
+  
   private mounted() {
     this.user = this.$store.state.loggedInUser;
     this.setAllChats();
@@ -141,8 +145,14 @@ export default class TheChatView extends Vue {
     this.$router.push('/login');
   }
 
-  private goToChat(): void {
-    this.$router.push('/chat');
+  private async goToChat(chatId: number){
+    this.$store.commit('setSelectedChat', chatId);
+    this.$router.push('/chat/' + this.$store.state.selectedChat);
+    
+    if(this.$store.state.selectedChat.id !== undefined ){
+      this.messages = await MessageService.getMessagesInChat(this.$store.state.selectedChat);
+      this.chat = await ChatService.getChat(this.$store.state.selectedChat);
+    }
   }
 
   private onChanged(image: string) {
