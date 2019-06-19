@@ -118,7 +118,8 @@ export default class TheChatView extends Vue {
   private image: string = '';
   private editImage: boolean = false;
   private showHeader: boolean = true;
-
+  private chat?: Chat;
+  
   private mounted() {
     this.user = this.$store.state.loggedInUser;
     this.setAllChats();
