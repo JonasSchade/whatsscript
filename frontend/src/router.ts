@@ -32,6 +32,11 @@ export default new Router({
       component: () => import('./components/TheRegistration.vue')
     },
     {
+      path: '/start',
+      name: 'Start',
+      component: () => import('./components/StartPage.vue')
+    },
+    {
       path: '/chat',
       name: 'Chat',
       component: () => import('./components/TheChat.vue'),
@@ -47,7 +52,11 @@ export default new Router({
         }
         
         store.commit('setChats', chats);
-        next(`/chat/${chats[0].id}`);
+        if (chats[0]) {
+          next(`/chat/${chats[0].id}`);
+        } else {
+          next('/start');
+        }
       }
     },
     {

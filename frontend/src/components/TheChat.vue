@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!--chat-history-->
-    <div class="chat-history">
+    <div class="chat-history" v-if="this.chat.id !== null">
       <message-component
         v-for="m in messages"
         :key="m.id"
@@ -13,7 +13,7 @@
     </div>
     <!--end of chat history-->
 
-    <div class="chat-message">
+    <div class="chat-message" v-if="this.chat.id !== null">
       <textarea
         v-model="messageToSend"
         name="message-to-send"
