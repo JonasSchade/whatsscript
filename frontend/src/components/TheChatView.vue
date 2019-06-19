@@ -98,6 +98,7 @@ import ChatSettings from './TheChatSettings.vue';
 import PictureInput from 'vue-picture-input';
 import { Message } from '../models/message';
 import { UserInChatService } from '../services/userInChat.service';
+import { request } from 'http';
 
 @Component({
   components: {
@@ -119,10 +120,41 @@ export default class TheChatView extends Vue {
   private editImage: boolean = false;
   private showHeader: boolean = true;
   private chat?: Chat;
+  private availableUsers: User[] = [];
   
   private mounted() {
     this.user = this.$store.state.loggedInUser;
     this.setAllChats();
+    this.setAvailableUsers();
+  }
+
+  private async setAvailableUsers() {
+    let allMyChats: Chat[] = [];
+    let allUsers: User[] = [];
+    if(this.user !== undefined && this.user.id !== undefined){
+      allMyChats = await this.getAllChatsForUser(this.user.id);
+    }
+    let allChatPartners: User[] = [];
+    for (let index = 0; index < allMyChats.length; index++) {
+      const chat: Chat = allMyChats[index];
+      const usersInChat = await ChatService.getUsersInChat(chat.id!);
+      console.log("Hallo" + usersInChat[0].username);
+      
+      if(allChatPartners.length == 0){
+       allChatPartners = usersInChat;
+      }else{
+        allChatPartners.concat(usersInChat);
+      }
+      console.log("Hallolooooo" + allChatPartners[0].username);
+      allUsers = await UserService.getAllUsers();
+      allUsers.forEach(userinAllUsers => {
+            allChatPartners.forEach(user => {
+              if (userinAllUsers.id === user.id) {
+                this.availableUsers = allUsers.filter(u => u.id !== user.id);
+              }
+            });
+      });
+}
   }
 
   private async getAllChatsForUser(userId: number) {

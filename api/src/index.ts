@@ -83,9 +83,17 @@ app.post('/setup', wrapAsync(async (req: Request, res: Response) => {
         picture: '',
         status: 'Ich bin der zweite User'
     });
+    let u3 = new User({
+        username: 'user3',
+        email: 'user3@example.com',
+        password: '$2a$10$WsO3Fc2FYMaS6QmGeWhpfuk2kOU4cmFtI3/ngaa13sPqO7IfrkgjO',
+        picture: '',
+        status: 'Ich bin der dritte User'
+    });
 
     u1 = await u1.save();
     u2 = await u2.save();
+    u3 = await u3.save();
 
     // generate chat
     let c1 = new Chat({ chatname: 'Chat1'});
