@@ -63,7 +63,7 @@
             <template v-for="(user, index) in availableUsers">
               <v-divider v-if="index!=0"  :key="index"></v-divider>
 
-              <v-list-tile :key="user.username" avatar>
+              <v-list-tile :key="user.username" avatar @click="addNewChat(user.id)">
                 <v-list-tile-avatar>
                   <img
                     :src="user.picture"
@@ -115,17 +115,26 @@ export default class TheChatView extends Vue {
  
   private publicPath: string = process.env.BASE_URL || '/';
   private allChats: Chat[] = [];
-  private user?: User = {id: undefined, username: '', email: '', password: '', picture: '', status: '', chats: []};
+  private user: User = {id: undefined, username: '', email: '', password: '', picture: '', status: '', chats: []};
   private image: string = '';
   private editImage: boolean = false;
   private showHeader: boolean = true;
   private chat?: Chat;
   private availableUsers: User[] = [];
   
+  
   private mounted() {
     this.user = this.$store.state.loggedInUser;
     this.setAllChats();
     this.setAvailableUsers();
+  }
+
+
+  private async addNewChat(userId: number){
+    let newChat: Chat = {chatname: 'TEST', picture: '', users: [this.user.id!, userId], messages: []};
+    await ChatService.addChat(newChat); 
+    this.$store.commit('setChats', newChat);
+    //this.goToChat(newChat.id);
   }
 
   private async setAvailableUsers() {
@@ -150,11 +159,11 @@ export default class TheChatView extends Vue {
       allUsers.forEach(userinAllUsers => {
             allChatPartners.forEach(user => {
               if (userinAllUsers.id === user.id) {
-                let availableUsers = allUsers.filter(u => u.id === user.id);
+                this.availableUsers = allUsers.filter(u => u.id === user.id);
               }
             });
       });
-}
+    }
   }
 
   private async getAllChatsForUser(userId: number) {
