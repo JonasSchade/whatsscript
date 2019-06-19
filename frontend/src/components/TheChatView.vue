@@ -150,7 +150,7 @@ export default class TheChatView extends Vue {
       allUsers.forEach(userinAllUsers => {
             allChatPartners.forEach(user => {
               if (userinAllUsers.id === user.id) {
-                this.availableUsers = allUsers.filter(u => u.id !== user.id);
+                let availableUsers = allUsers.filter(u => u.id === user.id);
               }
             });
       });
