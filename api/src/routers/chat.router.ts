@@ -16,7 +16,7 @@ ChatRouter.get('/', [checkAuth], wrapAsync(async (req: WhatsScriptRequest, res: 
 }));
 
 // suche bestimmten chat
-ChatRouter.get('/:id',[checkAuth], wrapAsync(async (req: WhatsScriptRequest, res: Response) => {
+ChatRouter.get('/:id', [checkAuth], wrapAsync(async (req: WhatsScriptRequest, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id, { include: [ { model: User } ] });
 
     if (chat === null) throw { status: 404, responseMessage: `chat with id ${req.body.id} not found`};
@@ -53,7 +53,7 @@ ChatRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {
 // update chat
 ChatRouter.put('/:id', wrapAsync(async (req: Request, res: Response) => {
     const chat: Chat|null = await Chat.findByPk(req.params.id);
-    console.log("chatname: " + req.body.picture);
+    console.log('chatname: ' + req.body.picture);
     if (chat === null) throw { status: 404, responseMessage: `chat with id ${req.body.id} not found`};
     chat.update({
         chatname: req.body.chatname,
