@@ -30,7 +30,7 @@
       </div>
     <div flat class="header" v-if="showHeader">
       <v-avatar :size=80 class="header__avatar" v-if="editImage==false">
-        <img :src="user.picture" alt="avatar" @click="editImage = true">
+        <img :src="(user.picture || `${publicPath}images/user_icon.svg`)"  alt="avatar" @click="editImage = true">
       </v-avatar>
         <span class="title"> {{ (loggedInUser || { username: ''}).username }} </span>
         <span class="subheading"> {{ (loggedInUser || { status: ''}).status }} </span>
@@ -57,9 +57,11 @@
         </v-list-tile>
       </template>
     </v-list>
-    <v-btn round class="add-btn" color="primary" @click="showHeader=false" v-if="showHeader"><v-icon class="__icon">add</v-icon>Neuer Chat</v-btn>
-    <v-btn round class="add-btn" color="primary" @click="showHeader=true" v-if="!showHeader">Abbrechen</v-btn>
-    <v-list class="user-to-add-list" two-line>
+    <div class="center-content">
+      <v-btn round class="add-btn" color="primary" @click="showHeader=false" v-if="showHeader"><v-icon class="__icon">add</v-icon>Neuer Chat</v-btn>
+      <v-btn round class="add-btn" color="primary" @click="showHeader=true" v-if="!showHeader">Abbrechen</v-btn>
+    </div>
+    <v-list class="user-to-add-list" two-line v-if="!showHeader">
             <template v-for="(user, index) in availableUsers">
               <v-divider v-if="index!=0"  :key="index"></v-divider>
 
@@ -131,30 +133,40 @@ export default class TheChatView extends Vue {
   private async setAvailableUsers() {
     let allMyChats: Chat[] = [];
     let allUsers: User[] = [];
-    if(this.user !== undefined && this.user.id !== undefined){
+    if (this.user !== undefined && this.user.id !== undefined) {
       allMyChats = await this.getAllChatsForUser(this.user.id);
     }
     let allChatPartners: User[] = [];
+    let usersInChat: User[] = [];
     for (let index = 0; index < allMyChats.length; index++) {
       const chat: Chat = allMyChats[index];
-      const usersInChat = await ChatService.getUsersInChat(chat.id!);
-      console.log("Hallo" + usersInChat[0].username);
-      
-      if(allChatPartners.length == 0){
-       allChatPartners = usersInChat;
-      }else{
-        allChatPartners.concat(usersInChat);
+
+      if (chat.id !== undefined) {
+        usersInChat = await ChatService.getUsersInChat(chat.id);
       }
-      console.log("Hallolooooo" + allChatPartners[0].username);
+
+    }
+
+    if (allChatPartners.length == 0) {
+      allChatPartners = usersInChat;
+    } else {
+      allChatPartners.concat(usersInChat);
+    }
+
       allUsers = await UserService.getAllUsers();
-      allUsers.forEach(userinAllUsers => {
-            allChatPartners.forEach(user => {
-              if (userinAllUsers.id === user.id) {
-                let availableUsers = allUsers.filter(u => u.id === user.id);
-              }
-            });
+      let availableUsers = allUsers;
+      allUsers.forEach(userInAllUsers => {
+        allChatPartners.forEach(chatPartner => {
+          if (userInAllUsers.id === chatPartner.id) {
+            availableUsers = this.removeUserfromArray(availableUsers, chatPartner);
+          }
+        });
       });
-}
+    this.availableUsers = availableUsers;
+  }
+
+  private removeUserfromArray(array: User[], element: User): User[]{
+    return array.filter(u => u.id !== element.id);
   }
 
   private async getAllChatsForUser(userId: number) {
@@ -226,6 +238,11 @@ export default class TheChatView extends Vue {
     .list {
       padding: 10px;
     }
+
+    .center-content {
+      display: flex;
+      justify-content: center;
+    }
   }
   .header {
     padding: 10px 10px 20px 10px;
@@ -238,6 +255,8 @@ export default class TheChatView extends Vue {
       cursor: pointer;
       margin-bottom: 20px;
     }
+
   }
+
 
 </style>
