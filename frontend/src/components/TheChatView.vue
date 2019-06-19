@@ -28,7 +28,7 @@
           </v-btn>
         </div>    
       </div>
-    <div flat class="header">
+    <div flat class="header" v-if="showHeader">
       <v-avatar :size=80 class="header__avatar" v-if="editImage==false">
         <img :src="user.picture" alt="avatar" @click="editImage = true">
       </v-avatar>
@@ -38,7 +38,7 @@
 
     <v-divider></v-divider>
    
-    <v-list two-line class="list">
+    <v-list two-line class="list" v-if="showHeader">
       <template v-for="(chat, index) in allChats">      
         <v-divider v-if="index!=0" :key="index"></v-divider>
         <v-list-tile :key="chat.chatname" avatar @click="goToChat(chat.id)">
@@ -57,6 +57,31 @@
         </v-list-tile>
       </template>
     </v-list>
+    <v-btn round class="add-btn" color="primary" @click="showHeader=false" v-if="showHeader"><v-icon class="__icon">add</v-icon>Neuer Chat</v-btn>
+    <v-btn round class="add-btn" color="primary" @click="showHeader=true" v-if="!showHeader">Abbrechen</v-btn>
+    <v-list class="user-to-add-list" two-line>
+            <template v-for="(user, index) in availableUsers">
+              <v-divider v-if="index!=0"  :key="index"></v-divider>
+
+              <v-list-tile :key="user.username" avatar>
+                <v-list-tile-avatar>
+                  <img
+                    :src="user.picture"
+                    @error="user.picture=`${publicPath}images/user_icon.svg`"
+                  >
+                </v-list-tile-avatar>
+
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="user.username"></v-list-tile-title>
+                  <v-list-tile-sub-title v-html="user.status"></v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-btn flat fab @click="addUserToChat(user)"> 
+                  <v-icon>add</v-icon>
+                </v-btn>
+              </v-list-tile>
+            </template>
+            <v-divider/>
+          </v-list>
   </div>
 </template>
 
@@ -92,7 +117,7 @@ export default class TheChatView extends Vue {
   private user?: User = {id: undefined, username: '', email: '', password: '', picture: '', status: '', chats: []};
   private image: string = '';
   private editImage: boolean = false;
-  private chat?: Chat;
+  private showHeader: boolean = true;
 
   private mounted() {
     this.user = this.$store.state.loggedInUser;
