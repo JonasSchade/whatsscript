@@ -95,15 +95,7 @@ export default class TheChat extends Vue {
     status: 'Leer',
     chats: [1, 2]
   };
-  private user1: User = {
-    id: 1,
-    username: 'user1',
-    email: 'Leer',
-    password: 'Leer',
-    picture: 'Leer',
-    status: 'Leer',
-    chats: [1, 2]
-  };
+  
 
   private chat: Chat = {chatname: '', picture: '', users: [], messages: []};
   public messages: Message[] = new Array();
@@ -116,10 +108,9 @@ export default class TheChat extends Vue {
     // this.user.username = this.$store.state.loggedInUser.username;
     this.usersInChat.push(this.user);
     this.usersInChat.push(this.user2);
-    this.usersInChat.push(this.user1);
     this.getMessages();
-    this.$store.commit('setSelectedChat', 1);
-    this.setChat(1);
+    //this.$store.commit('setSelectedChat', 1);
+    this.setChat(this.$store.state.selectedChat);
     this.socket.on('MESSAGE', (data: Message) => {
       this.messages = [...this.messages, data];
       // you can also do this.messages.push(data);
@@ -155,18 +146,15 @@ export default class TheChat extends Vue {
     UserService.deleteUser(1);
   }
 
-  private addUser() {
-    UserService.addUser(this.user2);
-  }
-
   private sendMsg() {
+    console.log(this.$store.state.selectedChat);
     if (this.messageToSend !== '') {
       const sent: string = moment().format('hh:mm, DD.MM.YY');
       this.socket.emit('SEND_MESSAGE', {
         content: this.messageToSend,
         sent,
-        read: false,
-        chatId: 1,
+        read: true,
+        chatId: this.$store.state.selectedChat,
         userId: this.user.id
       });
       this.messageToSend = '';
