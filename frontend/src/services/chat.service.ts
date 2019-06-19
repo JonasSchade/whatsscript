@@ -10,23 +10,28 @@ export class ChatService {
         rp.delete('http://localhost:3000/chat/' + chatId);
     }
 
-    public static addChat(chat: Chat): void {
+    public static async addChat(chat: Chat) { //: Promise<Chat> {
         const options = {
             method: 'POST',
-            uri: 'http://localhost:3000/chat/',
+            uri: 'http://localhost:3000/chat',
             body: {
                 chatname: chat.chatname,
                 picture: chat.picture,
-                users: chat.users
+                users: chat.users,
+                messages: chat.messages,
             },
             json: true // Automatically stringifies the body to JSON
         };
-        
+        let response: Chat;
         try {
+            // const body = await rp.post(options);
+            // response = JSON.parse(body);
             rp.post(options);
         } catch (err) {
             throw new Error('Error in addChat()');
         }
+
+        // return response;
     }
 
     public static async updateChat(chatId: number, chat: Chat) {

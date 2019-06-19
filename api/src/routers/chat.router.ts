@@ -3,6 +3,7 @@ import { Chat } from '../models/chat.model';
 import { User } from '../models/user.model';
 import { Message } from '../models/message.model';
 import { wrapAsync, globalErrorHandler, checkAuth, WhatsScriptRequest } from '../utils/express.utils';
+import { matchedData } from 'express-validator/filter';
 
 export const ChatRouter = Router();
 
@@ -41,12 +42,16 @@ ChatRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
 }));
 
 // create chat
-ChatRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {
-    const chat: Chat|null = await Chat.findByPk(req.params.id);
+ChatRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {   
+    const chat = new Chat ({
+        chatname: req.body.chatname, 
+        picture: req.body.picture, 
+        users: req.body.users, 
+        messages: []
+    });
 
-    if (chat === null) throw { status: 404, responseMessage: `chat with id ${req.body.id} not found`};
+    await chat.save();
 
-    Chat.create();
     res.status(200).json(chat);
 }));
 
