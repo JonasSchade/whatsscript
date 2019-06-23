@@ -67,6 +67,7 @@ export default class Login extends Vue {
   private loginUserPw: string = '';
   private loginUserEmail: string = '';
   private error: string = '';
+  private salt: string = '$2a$10$WsO3Fc2FYMaS6QmGeWhpfu';
 
   private async loginUser() {
     const existingUsers: User[] = await this.getUser(this.loginUserInput);
@@ -83,7 +84,7 @@ export default class Login extends Vue {
       };
       await UserService.addUser(newUser);
       this.$store.commit('changeUser', newUser);
-      this.$router.push('/chat');
+      this.$router.push('/start');
       console.log(newUser.username + 'ist eingeloggt');
     } else {
       this.error = 'Dieser Username ist bereits vergeben.';
@@ -95,7 +96,7 @@ export default class Login extends Vue {
   }
 
   private async encrypt(plainPassword: string): Promise<string> {
-    return await  bcrypt.hashSync(plainPassword, 100);
+    return await  bcrypt.hashSync(plainPassword, this.salt);
   }
 }
 </script>

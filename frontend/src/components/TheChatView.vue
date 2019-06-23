@@ -38,7 +38,7 @@
 
     <v-divider></v-divider>
    
-    <v-list two-line class="list" v-if="showHeader" :key="allChats">
+    <v-list two-line class="list" v-if="showHeader" :key="this.chat">
       <template v-for="(chat, index) in allChats">      
         <v-divider v-if="index!=0" :key="index"></v-divider>
         <v-list-tile :key="chat.chatname" avatar @click="goToChat(chat.id)">
@@ -139,6 +139,7 @@ export default class TheChatView extends Vue {
       this.$store.commit('setSelectedChat', newChat.id);
       this.goToChat(newChat.id);
     }
+    this.chat = newChat;  // Damit die chatliste aktualisiert
     this.setAllChats();
   }
 
@@ -194,7 +195,7 @@ export default class TheChatView extends Vue {
   @Watch('messages')
   private async setAllChats() {
       this.allChats = await ChatService.getAllChats();
-      if (this.user !== undefined && this.user.id !== undefined) {
+      if (this.user !== undefined && this.user.id !== undefined && this.allChats !== undefined) {
         this.allChats = this.allChats.filter(chat => chat.users.includes(this.user.id!));
       }
   }
