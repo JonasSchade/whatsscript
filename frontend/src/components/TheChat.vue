@@ -93,9 +93,8 @@ export default class TheChat extends Vue {
   public usersInChat: User[] = new Array();
 
   private mounted() {
-    // this.getUsersInChat(thisChat);
+
     this.user = this.$store.state.loggedInUser;
-    console.log('this.uuuuuuser: ' + this.user);
     this.setChat(this.$store.state.selectedChat);
     this.setUsersInChat();
     this.getMessages();
@@ -104,6 +103,7 @@ export default class TheChat extends Vue {
       // you can also do this.messages.push(data);
       this.scrollToBottom();
     });
+
   }
 
   private async getUser(userId: number): Promise<User> {
@@ -124,7 +124,6 @@ export default class TheChat extends Vue {
 
   @Watch('chat')
   private async getMessages() {
-    console.log('jsfdfsnhoooooo')
     try {
       if (this.chat !== undefined && this.chat.id !== undefined) {
         this.messages = await MessageService.getMessagesInChat(this.chat.id);

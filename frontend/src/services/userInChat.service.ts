@@ -1,6 +1,7 @@
 import * as rp from 'request-promise-native';
 import { User } from '../models/user';
 import { Chat } from '../models/chat';
+import store from '@/store';
 
 export class UserInChatService {
 
@@ -8,6 +9,7 @@ export class UserInChatService {
         const options = {
             method: 'POST',
             uri: 'http://localhost:3000/userInChat/',
+            headers: { Authorization: store.state.token },
             body: {
                 user,
                 chatId

@@ -38,7 +38,7 @@
 
     <v-divider></v-divider>
    
-    <v-list two-line class="list" v-if="showHeader">
+    <v-list two-line class="list" v-if="showHeader" :key="allChats">
       <template v-for="(chat, index) in allChats">      
         <v-divider v-if="index!=0" :key="index"></v-divider>
         <v-list-tile :key="chat.chatname" avatar @click="goToChat(chat.id)">
@@ -77,9 +77,6 @@
                   <v-list-tile-title v-html="user.username"></v-list-tile-title>
                   <v-list-tile-sub-title v-html="user.status"></v-list-tile-sub-title>
                 </v-list-tile-content>
-                <v-btn flat fab @click="addUserToChat(user)"> 
-                  <v-icon>add</v-icon>
-                </v-btn>
               </v-list-tile>
             </template>
             <v-divider/>
@@ -131,11 +128,18 @@ export default class TheChatView extends Vue {
     this.setAvailableUsers();
   }
 
+  private dos() {
+    console.log('fuuuuuuck vekamd');
+  }
 
   private async addNewChat(userId: number) {
-    let newChat: Chat = {chatname: 'TEST', picture: '', users: [this.user.id!, userId], messages: []};
-    await ChatService.addChat(newChat);
-    this.$store.commit('setChats', newChat);
+    let newChat: Chat = {chatname: '', picture: '', users: [this.user.id!, userId], messages: []};
+    newChat = await ChatService.addChat(newChat);
+    if (newChat !== null && newChat.id !== undefined) {
+      this.$store.commit('setSelectedChat', newChat.id);
+      this.goToChat(newChat.id);
+    }
+    this.setAllChats();
   }
 
   private async setAvailableUsers() {
@@ -187,8 +191,12 @@ export default class TheChatView extends Vue {
     }
   }
 
+  @Watch('messages')
   private async setAllChats() {
       this.allChats = await ChatService.getAllChats();
+      if (this.user !== undefined && this.user.id !== undefined) {
+        this.allChats = this.allChats.filter(chat => chat.users.includes(this.user.id!));
+      }
   }
 
   private logout(): void {
@@ -196,12 +204,10 @@ export default class TheChatView extends Vue {
   }
 
   private async goToChat(chatId: number) {
-    console.log('fuuuuuuck')
     const user: User = this.user;
     this.$store.commit('setSelectedChat', chatId);
     this.$router.push('/chat/' + this.$store.state.selectedChat);
     this.$store.commit('changeUser', user);
-    console.log('Halööööle: ' + this.$store.state.loggedInUser.username)
   }
 
   private onChanged(image: string) {

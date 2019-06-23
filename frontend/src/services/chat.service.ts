@@ -3,6 +3,8 @@ import * as rp from 'request-promise-native';
 import { Chat } from '../models/chat';
 import { User } from '../models/user';
 import store from '@/store';
+import { UserInChatService } from './userInChat.service';
+import { UserService } from './user.service';
 
 export class ChatService {
 
@@ -10,10 +12,11 @@ export class ChatService {
         rp.delete('http://localhost:3000/chat/' + chatId);
     }
 
-    public static async addChat(chat: Chat) { //: Promise<Chat> {
+    public static async addChat(chat: Chat): Promise<Chat> {
         const options = {
             method: 'POST',
             uri: 'http://localhost:3000/chat',
+            headers: { Authorization: store.state.token },
             body: {
                 chatname: chat.chatname,
                 picture: chat.picture,
@@ -24,14 +27,23 @@ export class ChatService {
         };
         let response: Chat;
         try {
-            // const body = await rp.post(options);
-            // response = JSON.parse(body);
-            rp.post(options);
+            const body = await rp.post(options);
+
+            response = { id: body.id, chatname: body.chatname, picture: body.picture, users: body.users, messages: [] };
+
+            const user1: User = await UserService.getUser(chat.users[0]);
+
+            const user2: User = await UserService.getUser(chat.users[1]);
+
+
+            UserInChatService.addUserToChat(user1, body.id);
+            UserInChatService.addUserToChat(user2, body.id);
+
         } catch (err) {
             throw new Error('Error in addChat()');
         }
 
-        // return response;
+        return response;
     }
 
     public static async updateChat(chatId: number, chat: Chat) {
