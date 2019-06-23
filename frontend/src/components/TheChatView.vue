@@ -132,11 +132,10 @@ export default class TheChatView extends Vue {
   }
 
 
-  private async addNewChat(userId: number){
+  private async addNewChat(userId: number) {
     let newChat: Chat = {chatname: 'TEST', picture: '', users: [this.user.id!, userId], messages: []};
-    await ChatService.addChat(newChat); 
+    await ChatService.addChat(newChat);
     this.$store.commit('setChats', newChat);
-    //this.goToChat(newChat.id);
   }
 
   private async setAvailableUsers() {
@@ -156,25 +155,25 @@ export default class TheChatView extends Vue {
 
     }
 
-    if (allChatPartners.length == 0) {
+    if (allChatPartners.length === 0) {
       allChatPartners = usersInChat;
     } else {
       allChatPartners.concat(usersInChat);
     }
 
-      allUsers = await UserService.getAllUsers();
-      let availableUsers = allUsers;
-      allUsers.forEach(userInAllUsers => {
-        allChatPartners.forEach(chatPartner => {
-          if (userInAllUsers.id === chatPartner.id) {
-            availableUsers = this.removeUserfromArray(availableUsers, chatPartner);
-          }
-        });
+    allUsers = await UserService.getAllUsers();
+    let availableUsers = allUsers;
+    allUsers.forEach(userInAllUsers => {
+      allChatPartners.forEach(chatPartner => {
+        if (userInAllUsers.id === chatPartner.id) {
+          availableUsers = this.removeUserfromArray(availableUsers, chatPartner);
+        }
       });
+    });
     this.availableUsers = availableUsers;
   }
 
-  private removeUserfromArray(array: User[], element: User): User[]{
+  private removeUserfromArray(array: User[], element: User): User[] {
     return array.filter(u => u.id !== element.id);
   }
 
@@ -196,14 +195,13 @@ export default class TheChatView extends Vue {
     this.$router.push('/login');
   }
 
-  private async goToChat(chatId: number){
+  private async goToChat(chatId: number) {
+    console.log('fuuuuuuck')
+    const user: User = this.user;
     this.$store.commit('setSelectedChat', chatId);
     this.$router.push('/chat/' + this.$store.state.selectedChat);
-    
-    if(this.$store.state.selectedChat.id !== undefined ){
-      this.messages = await MessageService.getMessagesInChat(this.$store.state.selectedChat);
-      this.chat = await ChatService.getChat(this.$store.state.selectedChat);
-    }
+    this.$store.commit('changeUser', user);
+    console.log('Halööööle: ' + this.$store.state.loggedInUser.username)
   }
 
   private onChanged(image: string) {

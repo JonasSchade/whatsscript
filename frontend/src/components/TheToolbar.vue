@@ -4,7 +4,7 @@
       <v-icon large>menu</v-icon>
     </v-btn>
 
-    <v-toolbar-title class="title"> Welcome to Whatscript! {{ (loggedInUser || { username: ''}).username }}</v-toolbar-title>
+    <v-toolbar-title class="title"> Welcome to Whatscript {{ (loggedInUser || { username: ''}).username }}!</v-toolbar-title>
 
     <v-spacer></v-spacer>
 

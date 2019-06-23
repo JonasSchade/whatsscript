@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" :key="this.$route.path">
     <!--chat-history-->
     <div class="chat-history" v-if="this.chat.id !== null">
       <message-component
@@ -28,7 +28,7 @@
     <v-navigation-drawer
       class="chat-settings"
       v-model="$store.state.rightDrawerActive"
-      absolute
+      app
       right
       temporary
       width="400"
@@ -39,7 +39,7 @@
   <v-navigation-drawer
       class="chat-view"
       v-model="$store.state.leftDrawerActive"
-      absolute
+      app
       left
       temporary
       width="400"
@@ -76,19 +76,10 @@ export default class TheChat extends Vue {
   private socket = io('localhost:3000');
 
   private status: string = 'Kein Status';
-  @Prop({ type: Object as () => User })
+  @Prop()
   private user: User = {
     id: 1,
     username: 'Defaultname',
-    email: 'Leer',
-    password: 'Leer',
-    picture: 'Leer',
-    status: 'Leer',
-    chats: [1, 2]
-  };
-  private user2: User = {
-    id: 2,
-    username: 'user2',
     email: 'Leer',
     password: 'Leer',
     picture: 'Leer',
@@ -102,11 +93,9 @@ export default class TheChat extends Vue {
   public usersInChat: User[] = new Array();
 
   private mounted() {
-    // this.$store.state.loggedInUser = this.user;
     // this.getUsersInChat(thisChat);
     this.user = this.$store.state.loggedInUser;
-    // this.user.username = this.$store.state.loggedInUser.username;
-    //this.$store.commit('setSelectedChat', 1);
+    console.log('this.uuuuuuser: ' + this.user);
     this.setChat(this.$store.state.selectedChat);
     this.setUsersInChat();
     this.getMessages();
@@ -120,7 +109,7 @@ export default class TheChat extends Vue {
   private async getUser(userId: number): Promise<User> {
     try {
       // this.user = await UserService.getUser(1);
-      const userToReturn = await UserService.getUser(1);
+      const userToReturn = await UserService.getUser(userId);
       return userToReturn;
     } catch (err) {
       console.error('Error: ', err.message);
@@ -128,33 +117,32 @@ export default class TheChat extends Vue {
     }
   }
 
+  @Watch('chatId')
   private async setChat(chatId: number) {
-    console.log("chatId: " + chatId);
     this.chat = await ChatService.getChat(chatId);
-    console.log('aktiver Chat: ' +this.chat);
   }
 
+  @Watch('chat')
   private async getMessages() {
+    console.log('jsfdfsnhoooooo')
     try {
-      this.messages = await MessageService.getMessagesInChat(1);
+      if (this.chat !== undefined && this.chat.id !== undefined) {
+        this.messages = await MessageService.getMessagesInChat(this.chat.id);
+      }
     } catch (err) {
       console.log('Error: ', err.message);
     }
   }
 
-  private deleteUser() {
-    UserService.deleteUser(1);
-  }
-
   private sendMsg() {
-    console.log(this.$store.state.selectedChat);
     if (this.messageToSend !== '') {
+      console.log('this.user: ' + this.user);
       const sent: string = moment().format('hh:mm, DD.MM.YY');
       this.socket.emit('SEND_MESSAGE', {
         content: this.messageToSend,
         sent,
         read: true,
-        chatId: this.$store.state.selectedChat,
+        chatId: this.chat.id,
         userId: this.user.id
       });
       this.messageToSend = '';
@@ -162,17 +150,15 @@ export default class TheChat extends Vue {
   }
 
   private isItMyMessage(userid: number): boolean {
-    console.log('this.$store.state.loggedInUser.id: ' + this.$store.state.loggedInUser.id);
     return this.$store.state.loggedInUser.id === userid;
   }
 
   private getUsername(userId: number): string {
-    let userWithId = undefined;
+    let userWithId;
     if (this.usersInChat.length > 0) {
       userWithId = this.usersInChat.find(user => user.id === userId);
     }
     
-    console.log('userWithId' + userWithId)
     if (userWithId !== undefined) {
       return userWithId.username;
     }
@@ -184,6 +170,11 @@ export default class TheChat extends Vue {
     if (this.chat !== undefined && this.chat.id !== undefined) {
       this.usersInChat = await ChatService.getUsersInChat(this.chat.id!);
     }
+  }
+
+  @Watch('user')
+  private updateUser() {
+    this.user = this.$store.state.loggedInUser;
   }
 
   private updated() {

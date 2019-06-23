@@ -65,7 +65,8 @@ export default class Login extends Vue {
   private salt: string = '$2a$10$WsO3Fc2FYMaS6QmGeWhpfu';
 
 private async loginUser() {
-    const user: User|null = await LoginService.loginUser(this.loginUserInput, await bcrypt.hashSync(this.loginUserPw, this.salt));
+    const user: User|null =
+    await LoginService.loginUser(this.loginUserInput, await bcrypt.hashSync(this.loginUserPw, this.salt));
 
     if (user === null) {
       this.error = 'Username oder Passwort stimmt nicht';

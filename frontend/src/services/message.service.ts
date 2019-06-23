@@ -68,7 +68,7 @@ export class MessageService {
         let response: Message[];
 
         try {
-            const body = await rp.get('http://localhost:3000/message/');
+            const body = await rp.get('http://localhost:3000/message/chat/' + chatId);
             response = JSON.parse(body);
         } catch (err) {
             throw new Error('Error in getMessagesForChat()');
