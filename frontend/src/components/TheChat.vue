@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
 import { User } from '../models/user';
@@ -106,11 +106,10 @@ export default class TheChat extends Vue {
     // this.getUsersInChat(thisChat);
     this.user = this.$store.state.loggedInUser;
     // this.user.username = this.$store.state.loggedInUser.username;
-    this.usersInChat.push(this.user);
-    this.usersInChat.push(this.user2);
-    this.getMessages();
     //this.$store.commit('setSelectedChat', 1);
     this.setChat(this.$store.state.selectedChat);
+    this.setUsersInChat();
+    this.getMessages();
     this.socket.on('MESSAGE', (data: Message) => {
       this.messages = [...this.messages, data];
       // you can also do this.messages.push(data);
@@ -130,8 +129,9 @@ export default class TheChat extends Vue {
   }
 
   private async setChat(chatId: number) {
+    console.log("chatId: " + chatId);
     this.chat = await ChatService.getChat(chatId);
-    console.log(this.chat);
+    console.log('aktiver Chat: ' +this.chat);
   }
 
   private async getMessages() {
@@ -167,13 +167,25 @@ export default class TheChat extends Vue {
   }
 
   private getUsername(userId: number): string {
-    const userWithId = this.usersInChat.find(user => user.id === userId);
+    let userWithId = undefined;
+    if (this.usersInChat.length > 0) {
+      userWithId = this.usersInChat.find(user => user.id === userId);
+    }
+    
+    console.log('userWithId' + userWithId)
     if (userWithId !== undefined) {
       return userWithId.username;
     }
     return '';
   }
   
+  @Watch('chat')
+  private async setUsersInChat() {
+    if (this.chat !== undefined && this.chat.id !== undefined) {
+      this.usersInChat = await ChatService.getUsersInChat(this.chat.id!);
+    }
+  }
+
   private updated() {
     this.scrollToBottom();
   }

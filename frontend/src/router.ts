@@ -52,7 +52,8 @@ export default new Router({
         }
         
         store.commit('setChats', chats);
-        if (chats[0]) {
+        if (chats[0] !== null) {
+          store.commit('setSelectedChat', chats[0].id)
           next(`/chat/${chats[0].id}`);
         } else {
           next('/start');

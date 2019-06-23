@@ -57,7 +57,7 @@ export class ChatService {
         let response: Chat;
 
         try {
-            const body = await rp.get('http://localhost:3000/chat/' + chatId);
+            const body = await rp.get('http://localhost:3000/chat/' + chatId, { headers: { Authorization: store.state.token }});
             response = JSON.parse(body);
         } catch (err) {
             throw new Error('Error in getChat()');
