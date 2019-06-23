@@ -183,7 +183,7 @@ export default class TheChatView extends Vue {
 
   private async getAllChatsForUser(userId: number) {
     try {
-    const chatsToReturn = await UserService.getAllChatsForUser(1);
+    const chatsToReturn = await UserService.getAllChatsForUser(userId);
     return chatsToReturn;
     } catch (err) {
       console.error('Error: ', err.message);
