@@ -2,11 +2,23 @@ import { Router, Request, Response } from 'express';
 import { Message } from '../models/message.model';
 import { Chat } from '../models/chat.model';
 import { wrapAsync, globalErrorHandler } from '../utils/express.utils';
+import { where } from 'sequelize/types';
 
 export const MessageRouter = Router();
 
 MessageRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
     const messages: Message[] = await Message.findAll();
+    res.status(200).json(messages);
+}));
+
+
+// Get Messages from Chat with id=chatId
+MessageRouter.get('/chat/:chatId', wrapAsync(async (req: Request, res: Response) => {
+    const messages: Message[] = await Message.findAll({
+        where: {
+            chatId: req.params.chatId
+        }
+    });
     res.status(200).json(messages);
 }));
 

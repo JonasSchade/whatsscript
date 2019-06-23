@@ -35,6 +35,7 @@ export function checkAuth(req: WhatsScriptRequest, res: Response, next: NextFunc
     const token = req.cookies.whatsscript;
     const authHeader = req.header('Authorization');
     if (!token && !authHeader) {
+        console.log('token: ' + token + 'authHeader: ' + authHeader)
         return res.status(401).end();
     } else if (token && !validate(token)) {
         return res.status(403).end();

@@ -23,6 +23,8 @@ ChatRouter.get('/:id', [checkAuth], wrapAsync(async (req: WhatsScriptRequest, re
     if (chat === null) throw { status: 404, responseMessage: `chat with id ${req.body.id} not found`};
 
     const userId = req.whatsScriptUser.id;
+    console.log('userid: ' + userId);
+    console.log('chatuser: ' + chat.users);
 
     const user = chat.users.find(user => user.id === userId);
 
@@ -42,7 +44,7 @@ ChatRouter.delete('/:id', wrapAsync(async (req: Request, res: Response) => {
 }));
 
 // create chat
-ChatRouter.post('/:id', wrapAsync(async (req: Request, res: Response) => {   
+ChatRouter.post('/', [checkAuth], wrapAsync(async (req: Request, res: Response) => {   
     const chat = new Chat ({
         chatname: req.body.chatname, 
         picture: req.body.picture, 
